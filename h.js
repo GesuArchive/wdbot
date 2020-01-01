@@ -15,25 +15,17 @@ const chokidar 		= require('chokidar');
 const TOKEN 		= ''; 				   // bot token
 const prefix 		= '/';				   // bot prefix
 const MAIN_CHANNEL 	= '654799849333719080';// channel id for bot, where you type cmds
+const HOST			= '184761278634524673';//host user ID
 
 const client 		= new Discord.Client();
 const channel 		= client.channels.get(MAIN_CHANNEL);
 
-const demos 		= '/somehome/somedir/'; // demos dir if exist, otherwise use ""
-const REPOS_DIR		= '/home/tgstation/repos/'; // repos dir
-const PROD_DIR		= '/home/tgstation/production/'; // production dir
+const demos 		= '/home/ubuntu/production/server_white/data/logs/demos/'; // demos dir if exist, otherwise use ""
+const REPOS_DIR		= '/home/ubuntu/repos/'; // repos dir
+const PROD_DIR		= '/home/ubuntu/production/'; // production dir
 
-const S1_ADMINS  	= ["184761278634524673"]; // ids of those, who can stop/start the server
-const S1_DEVS    	= ["184761278634524673"]; // all other rights
-
-const S2_ADMINS  	= ["184761278634524673"];
-const S2_DEVS    	= ["184761278634524673"];
-
-const S1_NAME		= 'white';
-const S1_PORT		= '2019';
-
-const S2_NAME		= 'theta';
-const S2_PORT		= '2077';
+const S1 			= JSON.parse(fs.readFileSync('./s1.json', 'utf8'));
+const S2 			= JSON.parse(fs.readFileSync('./s2.json', 'utf8'));
 
 client.on('ready', () => {
 	client.user.setActivity("with servers"); 
@@ -44,11 +36,11 @@ setInterval(checkOnline, 5000); // refreshes data about servers every 5 seconds
 // we use screens for DD and DM
 
 async function checkOnline(server) {
-	var s1_onlinestatus  = shell.exec('[ "$(screen -ls | grep ' + S1_NAME + 'server)"  ] && echo ONLINE || echo OFFLINE', { silent: true });
-	var s1_compilestatus = shell.exec('[ "$(screen -ls | grep ' + S1_NAME + 'compile)" ] && echo ONLINE || echo OFFLINE', { silent: true });
+	var s1_onlinestatus  = shell.exec('[ "$(screen -ls | grep ' + S1.name + 'server)"  ] && echo ONLINE || echo OFFLINE', { silent: true });
+	var s1_compilestatus = shell.exec('[ "$(screen -ls | grep ' + S1.name + 'compile)" ] && echo ONLINE || echo OFFLINE', { silent: true });
 
-	var s2_onlinestatus  = shell.exec('[ "$(screen -ls | grep ' + S2_NAME + 'server)"  ] && echo ONLINE || echo OFFLINE', { silent: true });
-	var s2_compilestatus = shell.exec('[ "$(screen -ls | grep ' + S2_NAME + 'compile)" ] && echo ONLINE || echo OFFLINE', { silent: true });
+	var s2_onlinestatus  = shell.exec('[ "$(screen -ls | grep ' + S2.name + 'server)"  ] && echo ONLINE || echo OFFLINE', { silent: true });
+	var s2_compilestatus = shell.exec('[ "$(screen -ls | grep ' + S2.name + 'compile)" ] && echo ONLINE || echo OFFLINE', { silent: true });
 
 	if (s1_compilestatus == "ONLINE\n") {
 		s1_onlinestatus = "COMPILING";
@@ -77,14 +69,87 @@ client.on('message', message => {
 		return;
 	};
 
-	if (message.content.startsWith(prefix + S1_NAME)) {
-		cmd_to = message.content.slice(prefix.length).split(' ').slice(1).join(" ");
-		issue_command(message.author.id, cmd_to, S1_NAME);
+	if (message.content.startsWith(prefix + "luser") && message.author.id == HOST) {
+		var msg = message.content.slice(prefix.length).split(' ');
+		switch(msg[1]) {
+			case S1.name:
+				client.channels.get(MAIN_CHANNEL).send(`${S1.admins}`);
+				break;
+			case S2.name:
+				client.channels.get(MAIN_CHANNEL).send(`${S2.admins}`);
+				break;
+			default:
+				client.channels.get(MAIN_CHANNEL).send(`Run ${prefix}shelp`);
+				return;
+		}
 	};
 
-	if (message.content.startsWith(prefix + S2_NAME)) {
+	if (message.content.startsWith(prefix + "adduser") && message.author.id == HOST) {
+		var msg = message.content.slice(prefix.length).split(' ');
+		switch(msg[1]) {
+			case S1.name:
+				var uid = S1.admins.indexOf(msg[2]);
+				if (uid == -1) {
+					S1.admins.push(msg[2])
+					fs.writeFileSync('./s1.json', JSON.stringify(S1, null, 4));
+					client.channels.get(MAIN_CHANNEL).send(`Added <@${msg[2]}> to ${msg[1]}.`);
+				} else {
+					client.channels.get(MAIN_CHANNEL).send(`User <@${msg[2]}> already in ${msg[1]}.`);
+				}
+				break;
+			case S2.name:
+				var uid = S2.admins.indexOf(msg[2]);
+				if (uid == -1) {
+					S2.admins.push(msg[2])
+					fs.writeFileSync('./s2.json', JSON.stringify(S2, null, 4));
+					client.channels.get(MAIN_CHANNEL).send(`Added <@${msg[2]}> to ${msg[1]}.`);
+				} else {
+					client.channels.get(MAIN_CHANNEL).send(`User <@${msg[2]}> already in ${msg[1]}.`);
+				}
+				break;
+			default:
+				client.channels.get(MAIN_CHANNEL).send(`Run ${prefix}shelp`);
+				return;
+		}
+	};
+
+	if (message.content.startsWith(prefix + "remuser") && message.author.id == HOST) {
+		var msg = message.content.slice(prefix.length).split(' ');
+		switch(msg[1]) {
+			case S1.name:
+				var uid = S1.admins.indexOf(msg[2]);
+				if (uid != -1) {
+					S1.admins.splice(S1.admins.indexOf(msg[2]), 1);
+					fs.writeFileSync('./s1.json', JSON.stringify(S1, null, 4));
+					client.channels.get(MAIN_CHANNEL).send(`Removed <@${msg[2]}> from ${msg[1]}.`);
+				} else {
+					client.channels.get(MAIN_CHANNEL).send(`No such ID <@${msg[2]}> in ${msg[1]}.`);
+				};
+				break;
+			case S2.name:
+				var uid = S2.admins.indexOf(msg[2]);
+				if (uid != -1) {
+					S22.admins.splice(S2.admins.indexOf(msg[2]), 1);
+					fs.writeFileSync('./s2.json', JSON.stringify(S2, null, 4));
+					client.channels.get(MAIN_CHANNEL).send(`Removed <@${msg[2]}> from ${msg[1]}.`);
+				} else {
+					client.channels.get(MAIN_CHANNEL).send(`No such ID <@${msg[2]}> in ${msg[1]}.`);
+				}
+				break;
+			default:
+				client.channels.get(MAIN_CHANNEL).send(`Run ${prefix}shelp`);
+				return;
+		}
+	};
+
+	if (message.content.startsWith(prefix + S1.name)) {
 		cmd_to = message.content.slice(prefix.length).split(' ').slice(1).join(" ");
-		issue_command(message.author.id, cmd_to, S2_NAME);
+		issue_command(message.author.id, cmd_to, S1.name);
+	};
+
+	if (message.content.startsWith(prefix + S2.name)) {
+		cmd_to = message.content.slice(prefix.length).split(' ').slice(1).join(" ");
+		issue_command(message.author.id, cmd_to, S2.name);
 	};
 
 });
@@ -95,17 +160,17 @@ async function issue_command(uid, cmd, server) {
 	var devs;
 	var port;
 	switch(server) {
-		case S1_NAME:
-			sname  = S1_NAME;
-			admins = S1_ADMINS;
-			devs   = S1_DEVS;
-			port   = S1_PORT;
+		case S1.name:
+			sname  = S1.name;
+			admins = S1.admins;
+			devs   = S1.devs;
+			port   = S1.port;
 			break;
-		case S2_NAME:
-			sname  = S2_NAME;
-			admins = S2_ADMINS;
-			devs   = S2_DEVS;
-			port   = S2_PORT;
+		case S2.name:
+			sname  = S2.name;
+			admins = S2.admins;
+			devs   = S2.devs;
+			port   = S2.port;
 			break;
 		default:
 			client.channels.get(MAIN_CHANNEL).send(`Run ${prefix}shelp`);
@@ -121,6 +186,10 @@ async function issue_command(uid, cmd, server) {
 				case "compile":
 					shell.exec('cd ' + REPOS_DIR + 'repo_' + sname + '/ && : > ../' + sname + '_compile.log && screen -dmS ' + sname + 'compile -L -Logfile ../' + sname + '_compile.log DreamMaker tgstation.dme', { silent: true });
 					client.channels.get(MAIN_CHANNEL).send(`${sname}: Compiling.`);
+					break;
+				case "uc":
+					shell.exec('cd ' + REPOS_DIR + 'repo_' + sname + '/ && : > ../' + sname + '_update.log && : > ../' + sname + '_compile.log && git pull > ../' + sname + '_update.log && screen -dmS ' + sname + 'compile -L -Logfile ../' + sname + '_compile.log DreamMaker tgstation.dme', { silent: true });
+					client.channels.get(MAIN_CHANNEL).send(`${sname}: Started Auto-update-compile.`);
 					break;
 				case "update":
 					shell.exec('cd ' + REPOS_DIR + 'repo_' + sname + '/ && : > ../' + sname + '_update.log && git pull > ../' + sname + '_update.log &', { silent: true });
@@ -165,6 +234,11 @@ async function issue_command(uid, cmd, server) {
 
 async function print_help() {
 	var h = "Help contents:\n";
+	h += `> Host`;
+	h += `\`${prefix}adduser SERVER UID\` - adds user to server\n`;
+	h += `\`${prefix}remuser SERVER UID\` - removes user from server\n`;
+	h += `\`${prefix}luser SERVER\` - list of users in server\n`;
+	h += `> Dev`;
 	h += `\`${prefix}shelp\` - displays this information\n`;
 	h += `\`${prefix}SERVER compile\` - runs compilation in the repo dir\n`;
 	h += `\`${prefix}SERVER deploy\` - moves compiled files and things defined in deploy.sh\n`;
@@ -173,6 +247,7 @@ async function print_help() {
 	h += `\`${prefix}SERVER ulog\` - displays update log\n`;
 	h += `\`${prefix}SERVER dlog\` - displays DreamDaemon log\n`;
 	h += `\`${prefix}SERVER ddlog\` - retrieve dd.log file from the server\n`;
+	h += `> User`;
 	h += `\`${prefix}SERVER start|stop\` - start/stop server\n`;
 	client.channels.get(MAIN_CHANNEL).send(h);
 }
