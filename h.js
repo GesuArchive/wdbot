@@ -113,15 +113,15 @@ async function issue_command(uid, cmd, server) {
 			switch (cmd) {
 				case "deploy":
 					shell.exec('sh ' + REPOS_DIR + 'repo_' + sname + '/tools/deploy.sh ' + PROD_DIR + 'server_' + sname, { silent: true });
-					client.channels.get(MAIN_CHANNEL).send(`S1: Deployed.`);
+					client.channels.get(MAIN_CHANNEL).send(`${sname}: Deployed.`);
 					break;
 				case "compile":
 					shell.exec('cd ' + REPOS_DIR + 'repo_' + sname + '/ && : > ../' + sname + '_compile.log && screen -dmS ' + sname + 'compile -L -Logfile ../' + sname + '_compile.log DreamMaker tgstation.dme', { silent: true });
-					client.channels.get(MAIN_CHANNEL).send(`S1: Compiling.`);
+					client.channels.get(MAIN_CHANNEL).send(`${sname}: Compiling.`);
 					break;
 				case "update":
 					shell.exec('cd ' + REPOS_DIR + 'repo_' + sname + '/ && : > ../' + sname + '_update.log && git pull > ../' + sname + '_update.log &', { silent: true });
-					client.channels.get(MAIN_CHANNEL).send(`S1: Updated.`);
+					client.channels.get(MAIN_CHANNEL).send(`${sname}: Updated.`);
 					break;
 				case "clog":
 					var log = shell.exec('cat ' + REPOS_DIR + sname + '_compile.log', { silent: true });
@@ -146,12 +146,15 @@ async function issue_command(uid, cmd, server) {
 		};
 		switch (cmd) {
 			case "start":
+				if (shell.exec('[ "$(screen -ls | grep ' + sname + 'server)"  ] && echo 1 || echo 0', { silent: true }) == "1\n") {
+					client.channels.get(MAIN_CHANNEL).send(`${sname}: Not dead yet.`);
+				};
 				shell.exec('export LD_LIBRARY_PATH=' + PROD_DIR + 'server_' + sname + ' && cd ' + PROD_DIR + 'server_' + sname + '/ && : > ../' + sname + '_dd.log && screen -dmS ' + sname + 'server -L -Logfile ../' + sname + '_dd.log DreamDaemon tgstation.dmb -port ' + S1_PORT + ' -trusted -public -threads on -params config-directory=cfg', { silent: true });
-				client.channels.get(MAIN_CHANNEL).send(`S1: Starting.`);
+				client.channels.get(MAIN_CHANNEL).send(`${sname}: Starting.`);
 				break;
 			case "stop":
 				shell.exec('screen -X -S ' + sname + 'server quit', { silent: true });
-				client.channels.get(MAIN_CHANNEL).send(`S1: Killed.`);
+				client.channels.get(MAIN_CHANNEL).send(`${sname}: Killed.`);
 				break;
 		};
 	};
