@@ -234,11 +234,11 @@ async function issue_command(uid, cmd, server) {
 
 async function print_help() {
 	var h = "Help contents:\n";
-	h += `> Host`;
+	h += `> Host\n`;
 	h += `\`${prefix}adduser SERVER UID\` - adds user to server\n`;
 	h += `\`${prefix}remuser SERVER UID\` - removes user from server\n`;
 	h += `\`${prefix}luser SERVER\` - list of users in server\n`;
-	h += `> Dev`;
+	h += `> Dev\n`;
 	h += `\`${prefix}shelp\` - displays this information\n`;
 	h += `\`${prefix}SERVER compile\` - runs compilation in the repo dir\n`;
 	h += `\`${prefix}SERVER deploy\` - moves compiled files and things defined in deploy.sh\n`;
@@ -247,7 +247,7 @@ async function print_help() {
 	h += `\`${prefix}SERVER ulog\` - displays update log\n`;
 	h += `\`${prefix}SERVER dlog\` - displays DreamDaemon log\n`;
 	h += `\`${prefix}SERVER ddlog\` - retrieve dd.log file from the server\n`;
-	h += `> User`;
+	h += `> User\n`;
 	h += `\`${prefix}SERVER start|stop\` - start/stop server\n`;
 	client.channels.get(MAIN_CHANNEL).send(h);
 }
