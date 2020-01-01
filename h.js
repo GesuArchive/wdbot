@@ -72,6 +72,11 @@ client.on('message', message => {
 	if (message.channel != client.channels.get(MAIN_CHANNEL)) return;
 	if (!message.content.startsWith(prefix)) return;
 
+	if (message.content.startsWith(prefix + "shelp")) {
+		print_help();
+		return;
+	};
+
 	if (message.content.startsWith(prefix + S1_NAME)) {
 		cmd_to = message.content.slice(prefix.length).split(' ').slice(1).join(" ");
 		issue_command(message.author.id, cmd_to, S1_NAME);
@@ -85,117 +90,76 @@ client.on('message', message => {
 });
 
 async function issue_command(uid, cmd, server) {
+	var sname;
+	var admins;
+	var devs;
 	switch(server) {
 		case S1_NAME:
-			if (S1_ADMINS.includes(uid)) {
-				if (S1_DEVS.includes(uid)) {
-					switch (cmd) {
-						case "deploy":
-							shell.exec('sh ' + REPOS_DIR + 'repo_' + S1_NAME + '/tools/deploy.sh ' + PROD_DIR + 'server_' + S1_NAME, { silent: true });
-							client.channels.get(MAIN_CHANNEL).send(`S1: Deployed.`);
-							break;
-						case "compile":
-							shell.exec('cd ' + REPOS_DIR + 'repo_' + S1_NAME + '/ && : > ../' + S1_NAME + '_compile.log && screen -dmS ' + S1_NAME + 'compile -L -Logfile ../' + S1_NAME + '_compile.log DreamMaker tgstation.dme', { silent: true });
-							client.channels.get(MAIN_CHANNEL).send(`S1: Compiling.`);
-							break;
-						case "update":
-							shell.exec('cd ' + REPOS_DIR + 'repo_' + S1_NAME + '/ && : > ../' + S1_NAME + '_update.log && git pull > ../' + S1_NAME + '_update.log &', { silent: true });
-							client.channels.get(MAIN_CHANNEL).send(`S1: Updated.`);
-							break;
-						case "clog":
-							var log = shell.exec('cat ' + REPOS_DIR + S1_NAME + '_compile.log', { silent: true });
-							client.channels.get(MAIN_CHANNEL).send(`\`\`\`${log}\`\`\``);
-							break;
-						case "ulog":
-							var log = shell.exec('cat ' + REPOS_DIR + S1_NAME + '_update.log', { silent: true });
-							client.channels.get(MAIN_CHANNEL).send(`${log}`, { split: true });
-							break;
-						case "dlog":
-							var log = shell.exec('cat ' + PROD_DIR + S1_NAME + '_dd.log', { silent: true });
-							client.channels.get(MAIN_CHANNEL).send(`${log}`, { split: true });
-							break;
-						case "ddlog":
-							if (fs.existsSync(PROD_DIR + S1_NAME + '_dd.log')) {
-								client.channels.get(MAIN_CHANNEL).send({ files: [PROD_DIR + S1_NAME + '_dd.log'] });
-							} else {
-								client.channels.get(MAIN_CHANNEL).send(`No file, <@${mts.author.id}>`);
-							};
-							break;
-					};
-				};
-				switch (cmd) {
-					case "start":
-						shell.exec('export LD_LIBRARY_PATH=' + PROD_DIR + 'server_' + S1_NAME + ' && cd ' + PROD_DIR + 'server_' + S1_NAME + '/ && : > ../' + S1_NAME + '_dd.log && screen -dmS ' + S1_NAME + 'server -L -Logfile ../' + S1_NAME + '_dd.log DreamDaemon tgstation.dmb -port ' + S1_PORT + ' -trusted -public -threads on -params config-directory=cfg', { silent: true });
-						client.channels.get(MAIN_CHANNEL).send(`S1: Starting.`);
-						break;
-					case "stop":
-						shell.exec('screen -X -S ' + S1_NAME + 'server quit', { silent: true });
-						client.channels.get(MAIN_CHANNEL).send(`S1: Killed.`);
-						break;
-					case "shelp":
-						print_help();
-						break;
-				};
-			};
+			sname  = S1_NAME;
+			admins = S1_ADMINS;
+			devs   = S1_DEVS;
 			break;
 		case S2_NAME:
-			if (S2_ADMINS.includes(uid)) {
-				if (S2_DEVS.includes(uid)) {
-					switch (cmd) {
-						case "deploy":
-							shell.exec('sh ' + REPOS_DIR + 'repo_' + S2_NAME + '/tools/deploy.sh ' + PROD_DIR + 'server_' + S2_NAME, { silent: true });
-							client.channels.get(MAIN_CHANNEL).send(`S2: Deployed.`);
-							break;
-						case "compile":
-							shell.exec('cd ' + REPOS_DIR + 'repo_' + S2_NAME + '/ && : > ../' + S2_NAME + '_compile.log && screen -dmS ' + S2_NAME + 'compile -L -Logfile ../' + S2_NAME + '_compile.log DreamMaker tgstation.dme', { silent: true });
-							client.channels.get(MAIN_CHANNEL).send(`S2: Compiling.`);
-							break;
-						case "update":
-							shell.exec('cd ' + REPOS_DIR + 'repo_' + S2_NAME + '/ && : > ../' + S2_NAME + '_update.log && git pull > ../' + S2_NAME + '_update.log &', { silent: true });
-							client.channels.get(MAIN_CHANNEL).send(`S2: Updated.`);
-							break;
-						case "clog":
-							var log = shell.exec('cat ' + REPOS_DIR + S2_NAME + '_compile.log', { silent: true });
-							client.channels.get(MAIN_CHANNEL).send(`\`\`\`${log}\`\`\``);
-							break;
-						case "ulog":
-							var log = shell.exec('cat ' + REPOS_DIR + S2_NAME + '_update.log', { silent: true });
-							client.channels.get(MAIN_CHANNEL).send(`${log}`, { split: true });
-							break;
-						case "dlog":
-							var log = shell.exec('cat ' + PROD_DIR + S2_NAME + '_dd.log', { silent: true });
-							client.channels.get(MAIN_CHANNEL).send(`${log}`, { split: true });
-							break;
-						case "ddlog":
-							if (fs.existsSync(PROD_DIR + S2_NAME + '_dd.log')) {
-								client.channels.get(MAIN_CHANNEL).send({ files: [PROD_DIR + S2_NAME + '_dd.log'] });
-							} else {
-								client.channels.get(MAIN_CHANNEL).send(`No file, <@${mts.author.id}>`);
-							};
-							break;
-					};
-				};
-				switch (cmd) {
-					case "start":
-						shell.exec('export LD_LIBRARY_PATH=' + PROD_DIR + 'server_' + S2_NAME + ' && cd ' + PROD_DIR + 'server_' + S2_NAME + '/ && : > ../' + S2_NAME + '_dd.log && screen -dmS ' + S2_NAME + 'server -L -Logfile ../' + S2_NAME + '_dd.log DreamDaemon tgstation.dmb -port ' + S2_PORT + ' -trusted -public -threads on -params config-directory=cfg', { silent: true });
-						client.channels.get(MAIN_CHANNEL).send(`S2: Starting.`);
-						break;
-					case "stop":
-						shell.exec('screen -X -S ' + S2_NAME + 'server quit', { silent: true });
-						client.channels.get(MAIN_CHANNEL).send(`S2: Killed.`);
-						break;
-					case "shelp":
-						print_help();
-						break;
-				};
-			};
+			sname  = S2_NAME;
+			admins = S2_ADMINS;
+			devs   = S2_DEVS;
 			break;
+		default:
+			client.channels.get(MAIN_CHANNEL).send(`Run ${prefix}shelp`);
+			return;
+	};
+	if (admins.includes(uid)) {
+		if (devs.includes(uid)) {
+			switch (cmd) {
+				case "deploy":
+					shell.exec('sh ' + REPOS_DIR + 'repo_' + sname + '/tools/deploy.sh ' + PROD_DIR + 'server_' + sname, { silent: true });
+					client.channels.get(MAIN_CHANNEL).send(`S1: Deployed.`);
+					break;
+				case "compile":
+					shell.exec('cd ' + REPOS_DIR + 'repo_' + sname + '/ && : > ../' + sname + '_compile.log && screen -dmS ' + sname + 'compile -L -Logfile ../' + sname + '_compile.log DreamMaker tgstation.dme', { silent: true });
+					client.channels.get(MAIN_CHANNEL).send(`S1: Compiling.`);
+					break;
+				case "update":
+					shell.exec('cd ' + REPOS_DIR + 'repo_' + sname + '/ && : > ../' + sname + '_update.log && git pull > ../' + sname + '_update.log &', { silent: true });
+					client.channels.get(MAIN_CHANNEL).send(`S1: Updated.`);
+					break;
+				case "clog":
+					var log = shell.exec('cat ' + REPOS_DIR + sname + '_compile.log', { silent: true });
+					client.channels.get(MAIN_CHANNEL).send(`\`\`\`${log}\`\`\``);
+					break;
+				case "ulog":
+					var log = shell.exec('cat ' + REPOS_DIR + sname + '_update.log', { silent: true });
+					client.channels.get(MAIN_CHANNEL).send(`${log}`, { split: true });
+					break;
+				case "dlog":
+					var log = shell.exec('cat ' + PROD_DIR + sname + '_dd.log', { silent: true });
+					client.channels.get(MAIN_CHANNEL).send(`${log}`, { split: true });
+					break;
+				case "ddlog":
+					if (fs.existsSync(PROD_DIR + sname + '_dd.log')) {
+						client.channels.get(MAIN_CHANNEL).send({ files: [PROD_DIR + sname + '_dd.log'] });
+					} else {
+						client.channels.get(MAIN_CHANNEL).send(`No file, <@${mts.author.id}>`);
+					};
+					break;
+			};
+		};
+		switch (cmd) {
+			case "start":
+				shell.exec('export LD_LIBRARY_PATH=' + PROD_DIR + 'server_' + sname + ' && cd ' + PROD_DIR + 'server_' + sname + '/ && : > ../' + sname + '_dd.log && screen -dmS ' + sname + 'server -L -Logfile ../' + sname + '_dd.log DreamDaemon tgstation.dmb -port ' + S1_PORT + ' -trusted -public -threads on -params config-directory=cfg', { silent: true });
+				client.channels.get(MAIN_CHANNEL).send(`S1: Starting.`);
+				break;
+			case "stop":
+				shell.exec('screen -X -S ' + sname + 'server quit', { silent: true });
+				client.channels.get(MAIN_CHANNEL).send(`S1: Killed.`);
+				break;
+		};
 	};
 };
 
 async function print_help() {
 	var h = "Help contents:\n";
-	h += `\`${prefix}SERVER shelp\` - displays this information\n`;
+	h += `\`${prefix}shelp\` - displays this information\n`;
 	h += `\`${prefix}SERVER compile\` - runs compilation in the repo dir\n`;
 	h += `\`${prefix}SERVER deploy\` - moves compiled files and things defined in deploy.sh\n`;
 	h += `\`${prefix}SERVER update\` - updates local repo from master\n`;
