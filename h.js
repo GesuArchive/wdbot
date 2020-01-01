@@ -93,16 +93,19 @@ async function issue_command(uid, cmd, server) {
 	var sname;
 	var admins;
 	var devs;
+	var port;
 	switch(server) {
 		case S1_NAME:
 			sname  = S1_NAME;
 			admins = S1_ADMINS;
 			devs   = S1_DEVS;
+			port   = S1_PORT;
 			break;
 		case S2_NAME:
 			sname  = S2_NAME;
 			admins = S2_ADMINS;
 			devs   = S2_DEVS;
+			port   = S2_PORT;
 			break;
 		default:
 			client.channels.get(MAIN_CHANNEL).send(`Run ${prefix}shelp`);
@@ -149,7 +152,7 @@ async function issue_command(uid, cmd, server) {
 				if (shell.exec('[ "$(screen -ls | grep ' + sname + 'server)"  ] && echo 1 || echo 0', { silent: true }) == "1\n") {
 					client.channels.get(MAIN_CHANNEL).send(`${sname}: Not dead yet.`);
 				};
-				shell.exec('export LD_LIBRARY_PATH=' + PROD_DIR + 'server_' + sname + ' && cd ' + PROD_DIR + 'server_' + sname + '/ && : > ../' + sname + '_dd.log && screen -dmS ' + sname + 'server -L -Logfile ../' + sname + '_dd.log DreamDaemon tgstation.dmb -port ' + S1_PORT + ' -trusted -public -threads on -params config-directory=cfg', { silent: true });
+				shell.exec('export LD_LIBRARY_PATH=' + PROD_DIR + 'server_' + sname + ' && cd ' + PROD_DIR + 'server_' + sname + '/ && : > ../' + sname + '_dd.log && screen -dmS ' + sname + 'server -L -Logfile ../' + sname + '_dd.log DreamDaemon tgstation.dmb -port ' + port + ' -trusted -public -threads on -params config-directory=cfg', { silent: true });
 				client.channels.get(MAIN_CHANNEL).send(`${sname}: Starting.`);
 				break;
 			case "stop":
