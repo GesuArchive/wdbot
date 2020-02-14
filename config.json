@@ -1,0 +1,42 @@
+{
+  "general": {
+    "OUTPUT_LANGUAGE": "ENG",
+    "AVAILABLE_OUTPUT_LANGUAGES": ["ENG", "RUS"],
+
+    "BOT_ACCESS_TOKEN": "",
+    "cmd_prefix": "/",
+    "HOST_USER_ID": "184761278634524673"
+  },
+  "channels_id": {
+    "COMMAND_LINE": "654799849333719080",
+    "ENDROUND": "594650207950471168"
+  },
+  "directories": {
+    "DEMOS": "/home/ubuntu/production/server_white/data/logs/demos/",
+    "REPOS": "/home/ubuntu/repos/",
+    "PROD":  "/home/ubuntu/production/"
+  },
+
+  "commands": {
+    "general": {
+      "help": "shelp",
+      "whoisadmin": "luser",
+      "adduser": "adduser",
+      "remuser": "remuser"
+    },
+    "build_control": {
+      "deploy": "deploy",
+      "compile": "compile",
+      "update_compile": "uc",
+      "update": "update",
+      "send_compile_log": "clog",
+      "send_update_log": "ulog",
+      "dlog": "dlog",
+      "ddlog": "ddlog"
+    },
+    "work_control": {
+    "start": "start",
+    "stop": "stop"
+    }
+  }
+}
