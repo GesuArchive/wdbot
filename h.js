@@ -14,9 +14,11 @@ const chokidar	= require('chokidar');
 
 const cfg	= JSON.parse(fs.readFileSync('./config.json', 'utf8'));
 if (cfg.channels_id.COMMAND_LINE === "RUS") {
-	const lang	= JSON.parse(fs.readFileSync('localization/lang.ru.js', 'utf8'))
+	const lang	= require('./localization/lang.ru');
+	//const lang	= JSON.parse(fs.readFileSync('localization/lang.ru', 'utf8')).lang_eng
 } else {
-	const lang	= JSON.parse(fs.readFileSync('localization/lang.en.js', 'utf8'));
+	const lang	= require('./localization/lang.en');
+	//const lang	= JSON.parse(fs.readFileSync('localization/lang.en', 'utf8')).lang_rus
 };
 
 const Server1	= JSON.parse(fs.readFileSync('./s1.json', 'utf8'));
@@ -251,4 +253,4 @@ async function print_help() {
 	client.channels.get(cfg.channels_id.COMMAND_LINE).send(h);
 }
 
-client.login(TOKEN);
+client.login(cfg.general.BOT_ACCESS_TOKEN);

@@ -1,3 +1,6 @@
+const fs  = require('fs');
+const cfg	= JSON.parse(fs.readFileSync('./config.json', 'utf8'));
+
 lang = {
-    greeting : `SS13 Server control bot is online. Type \`${prefix}shelp\` for help.`
+    greeting : `SS13 Server control bot is online. Type \`${cfg.general.cmd_prefix}shelp\` for help.`
 };
