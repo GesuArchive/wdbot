@@ -6,36 +6,43 @@
 // Fuck.
 //------------------------------------------------------//
 
+console.log("[____-__-__T__:__:__.___Z] Script started. Trying to import modules.");
+
 const Discord		= require('discord.js');
 const shell			= require('shelljs');
 const fs				= require('fs');
 const chokidar	= require('chokidar');
 									require('log-timestamp');
 
+console.log("Importing modules done. Trying to load config files.");
 const cfg	= JSON.parse(fs.readFileSync('./config.json', 'utf8'));
-console.log("Configs loaded, help command: " + cfg.general.cmd_prefix + cfg.commands.general.help);
 
-if ((cfg.general.OUTPUT_LANGUAGE == "ENG") || (typeof(cfg.general.OUTPUT_LANGUAGE) != "string"))  {
-	console.log("Selected language: en");
-	const lang	= require('./localization/lang.en');
-	//const lang	= JSON.parse(fs.readFileSync('localization/lang.en', 'utf8')).lang_rus
+console.log("Configs loaded, help command: " + cfg.general.cmd_prefix + cfg.commands.general.help + ". Trying to load localization files.");
+if ((cfg.general.OUTPUT_LANGUAGE == "ENG") || (typeof(cfg.general.OUTPUT_LANGUAGE) != String))  {
+	const lang	= require('./localization/lang.en.js');
+	if (typeof(lang.language_name) != "string") console.log("Trying to selecting language: English.");
 } else {
-	console.log("Selected language: ru");
-	const lang	= require('./localization/lang.ru');
+	const lang	= require('./localization/lang.ru.js');
+	if (typeof(lang.language_name) != "string") console.log("Trying to selecting language: Russian.");
 	//const lang	= JSON.parse(fs.readFileSync('localization/lang.ru', 'utf8')).lang_eng
 };
 
+if (typeof(lang.language_name) == "string") console.log(lang.select_lang + lang.language_name + ". " + lang.select_lang2);
+
+console.log("Trying to load servers settings.");
 const Server1	= JSON.parse(fs.readFileSync('./s1.json', 'utf8'));
+console.log("First server settings loaded.");
 const Server2	= JSON.parse(fs.readFileSync('./s2.json', 'utf8'));
 
+console.log("Second server settings loaded.");
 const client			= new Discord.Client();
 const cmd_channel	= client.channels.get(cfg.channels_id.COMMAND_LINE);
-
-console.log(typeof(cfg.channels_id.COMMAND_LINE)); // && " ; " && lang.greeting);
+const endround_channel	= client.channels.get(cfg.channels_id.ENDROUND)
 
 client.on('ready', () => {
-	client.channels.get(cfg.channels_id.COMMAND_LINE).send(lang.greeting);
-	client.user.setActivity("with servers");
+	console.log(lang.greeting_log);
+	client.channels.get(cfg.channels_id.COMMAND_LINE).send(lang.greeting_print);
+	client.user.setActivity(lang.bot_status_playing);
 });
 
 setInterval(checkOnline, 5000); // refreshes data about servers every 5 seconds
@@ -43,26 +50,26 @@ setInterval(checkOnline, 5000); // refreshes data about servers every 5 seconds
 // we use screens for DD and DM
 
 async function checkOnline(server) {
-	var s1_onlinestatus  = shell.exec('[ "$(screen -ls | grep ' + Server1.name + 'server)"  ] && echo ONLINE || echo OFFLINE', { silent: true });
+	var s1_onlinestatus  = shell.exec('[ "$(screen -ls | grep ' + Server1.name + 'server)"  ] && echo ' + lang.server_online + ' || echo ' + lang.server_offline, { silent: true });
 	var s1_compilestatus = shell.exec('[ "$(screen -ls | grep ' + Server1.name + 'compile)" ] && echo COMPILATION_IN_PROCESS || echo NOT_COMPILING', { silent: true });
 
-	var s2_onlinestatus  = shell.exec('[ "$(screen -ls | grep ' + Server2.name + 'server)"  ] && echo ONLINE || echo OFFLINE', { silent: true });
+	var s2_onlinestatus  = shell.exec('[ "$(screen -ls | grep ' + Server2.name + 'server)"  ] && echo ' + lang.server_online + ' || echo ' + lang.server_offline, { silent: true });
 	var s2_compilestatus = shell.exec('[ "$(screen -ls | grep ' + Server2.name + 'compile)" ] && echo COMPILATION_IN_PROCESS || echo NOT_COMPILING', { silent: true });
 
 	if (s1_compilestatus == "COMPILATION_IN_PROCESS\n") {
-		s1_onlinestatus = "COMPILING";
+		s1_onlinestatus = lang.server_build_compiling;
 	};
 
 	if (s2_compilestatus == "COMPILATION_IN_PROCESS\n") {
-		s2_onlinestatus = "COMPILING";
+		s2_onlinestatus = lang.server_build_compiling;
 	};
 
-	client.channels.get(cfg.channels_id.COMMAND_LINE).setTopic(`SERVER №1: ${s1_onlinestatus} | SERVER №2: ${s2_onlinestatus}`);
+	client.channels.get(cfg.channels_id.COMMAND_LINE).setTopic(`${cfg.servers.first.Discord_show_name}: ${s1_onlinestatus} | ${cfg.servers.second.Discord_show_name}: ${s2_onlinestatus}`);
 };
 
 chokidar.watch(cfg.directories.DEMOS, {ignoreInitial: true, interval: 15000}).on('addDir', (event, path) => { // every 15 seconds
 	if(DEMOS_DIR === "") return;
-	client.channels.get(ENDROUND_CHANNEL).send(`Round №${event.slice(-4)} ended. Replay: https://hub.station13.ru/replay/?roundid=${event.slice(-4)}`); // here is the channel where links to replays posted
+	endround_channel.send(`Round №${event.slice(-4)} ended. Replay: https://hub.station13.ru/replay/?roundid=${event.slice(-4)}`); // here is the channel where links to replays posted
 });
 
 client.on('message', message => {
@@ -72,7 +79,7 @@ client.on('message', message => {
 	if (!message.content.startsWith(cfg.general.cmd_prefix)) return;
 
 	if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.general.help)) {
-		console.log("Get command \"help\".");
+		console.log("Сommand received: \"help\".");
 		print_help();
 		return;
 	};
@@ -243,21 +250,22 @@ async function issue_command(uid, cmd, server) {
 async function print_help() {
 	console.log("Function \"print_help\" called.");
 	var h = "Help contents:\n";
-	h += `> Host privileges:\n`;
-	h += `\`${cfg.general.cmd_prefix}adduser SERVER UID\` - adds user to server\n`;
-	h += `\`${cfg.general.cmd_prefix}remuser SERVER UID\` - removes user from server\n`;
-	h += `\`${cfg.general.cmd_prefix}luser SERVER\` - list of users in server\n`;
-	h += `> Developer privileges:\n`;
-	h += `\`${cfg.general.cmd_prefix}shelp\` - displays this information\n`;
-	h += `\`${cfg.general.cmd_prefix}SERVER compile\` - runs compilation in the repo dir\n`;
-	h += `\`${cfg.general.cmd_prefix}SERVER deploy\` - moves compiled files and things defined in deploy.sh\n`;
-	h += `\`${cfg.general.cmd_prefix}SERVER update\` - updates local repo from master\n`;
-	h += `\`${cfg.general.cmd_prefix}SERVER clog\` - displays compile log\n`;
-	h += `\`${cfg.general.cmd_prefix}SERVER ulog\` - displays update log\n`;
-	h += `\`${cfg.general.cmd_prefix}SERVER dlog\` - displays DreamDaemon log\n`;
-	h += `\`${cfg.general.cmd_prefix}SERVER ddlog\` - retrieve dd.log file from the server\n`;
+	h += `> Host user privileges:\n`;
+	h += `\`${cfg.general.cmd_prefix}${cfg.commands.general.adduser} SERVER_NAME UID\` - adds user to server\n`;
+	h += `\`${cfg.general.cmd_prefix}${cfg.commands.general.remuser} SERVER_NAME UID\` - removes user from server\n`;
+	h += `\`${cfg.general.cmd_prefix}${cfg.commands.general.whoisadmin} SERVER_NAME\` - list of users in server\n`;
+	h += `> Developer user privileges:\n`;
+	h += `\`${cfg.general.cmd_prefix}${cfg.commands.general.help}\` - displays this information\n`;
+	h += `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.compile}\` - runs compilation in the repo dir\n`;
+	h += `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.deploy}\` - moves compiled files and things defined in deploy.sh\n`;
+	h += `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.update}\` - updates local repo from master\n`;
+	h += `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.send_compile_log}\` - sends compile log file\n`;
+	h += `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.send_update_log}\` - sends update log file\n`;
+	h += `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.dlog}\` - displays DreamDaemon log\n`;
+	h += `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.ddlog}\` - retrieve dd.log file from the server\n`;
 	h += `> Regular user privileges:\n`;
-	h += `\`${cfg.general.cmd_prefix}SERVER start|stop\` - start/stop server\n`;
+	h += `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.work_control.start}\` - start server\n`;
+	h += `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.work_control.stop}\` - stop server\n`;
 	client.channels.get(cfg.channels_id.COMMAND_LINE).send(h);
 }
 

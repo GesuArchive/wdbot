@@ -3,7 +3,7 @@
     "OUTPUT_LANGUAGE": "ENG",
     "AVAILABLE_OUTPUT_LANGUAGES": ["ENG", "RUS"],
 
-    "BOT_ACCESS_TOKEN": "",
+    "BOT_ACCESS_TOKEN": "AAA0000.AAA.AAA_AAA-AA-AAAAAA",
     "cmd_prefix": "/",
     "HOST_USER_ID": "184761278634524673"
   },
@@ -38,5 +38,6 @@
     "start": "start",
     "stop": "stop"
     }
-  }
+  },
+	"debug": 1
 }
