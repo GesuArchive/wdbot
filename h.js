@@ -13,12 +13,16 @@ const chokidar	= require('chokidar');
 									require('log-timestamp');
 
 const cfg	= JSON.parse(fs.readFileSync('./config.json', 'utf8'));
-if (cfg.channels_id.COMMAND_LINE === "RUS") {
-	const lang	= require('./localization/lang.ru');
-	//const lang	= JSON.parse(fs.readFileSync('localization/lang.ru', 'utf8')).lang_eng
-} else {
+console.log("Configs loaded, help command: " + cfg.general.cmd_prefix + cfg.commands.general.help);
+
+if ((cfg.general.OUTPUT_LANGUAGE == "ENG") || (typeof(cfg.general.OUTPUT_LANGUAGE) != "string"))  {
+	console.log("Selected language: en");
 	const lang	= require('./localization/lang.en');
 	//const lang	= JSON.parse(fs.readFileSync('localization/lang.en', 'utf8')).lang_rus
+} else {
+	console.log("Selected language: ru");
+	const lang	= require('./localization/lang.ru');
+	//const lang	= JSON.parse(fs.readFileSync('localization/lang.ru', 'utf8')).lang_eng
 };
 
 const Server1	= JSON.parse(fs.readFileSync('./s1.json', 'utf8'));
@@ -26,6 +30,8 @@ const Server2	= JSON.parse(fs.readFileSync('./s2.json', 'utf8'));
 
 const client			= new Discord.Client();
 const cmd_channel	= client.channels.get(cfg.channels_id.COMMAND_LINE);
+
+console.log(typeof(cfg.channels_id.COMMAND_LINE)); // && " ; " && lang.greeting);
 
 client.on('ready', () => {
 	client.channels.get(cfg.channels_id.COMMAND_LINE).send(lang.greeting);
@@ -61,17 +67,18 @@ chokidar.watch(cfg.directories.DEMOS, {ignoreInitial: true, interval: 15000}).on
 
 client.on('message', message => {
 	if (message.author.bot) return;
-	console.log(`[${message.author.username}] [${message.cmd_channel.name}]: ${message.content}`);
-	if (message.cmd_channel != client.channels.get(cfg.channels_id.COMMAND_LINE)) return;
-	if (!message.content.startsWith(prefix)) return;
+	console.log(`[${message.author.username}] [${message.channel.name}]: ${message.content}`);
+	if (message.channel != client.channels.get(cfg.channels_id.COMMAND_LINE)) return;
+	if (!message.content.startsWith(cfg.general.cmd_prefix)) return;
 
-	if (message.content.startsWith(prefix + cfg.commands.general.help)) {
+	if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.general.help)) {
+		console.log("Get command \"help\".");
 		print_help();
 		return;
 	};
 
-	if (message.content.startsWith(prefix + cfg.commands.general.whoisadmin) && message.author.id == HOST) {
-		var msg = message.content.slice(prefix.length).split(' ');
+	if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.general.whoisadmin) && message.author.id == HOST) {
+		var msg = message.content.slice(cfg.general.cmd_prefix.length).split(' ');
 		switch(msg[1]) {
 			case Server1.name:
 				client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${Server1.admins}`);
@@ -80,13 +87,13 @@ client.on('message', message => {
 				client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${Server2.admins}`);
 				break;
 			default:
-				client.channels.get(cfg.channels_id.COMMAND_LINE).send(`Run ${prefix}shelp`);
+				client.channels.get(cfg.channels_id.COMMAND_LINE).send(`Run ${cfg.general.cmd_prefix}shelp`);
 				return;
 		}
 	};
 
-	if (message.content.startsWith(prefix + cfg.commands.general.adduser) && message.author.id == HOST) {
-		var msg = message.content.slice(prefix.length).split(' ');
+	if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.general.adduser) && message.author.id == HOST) {
+		var msg = message.content.slice(cfg.general.cmd_prefix.length).split(' ');
 		switch(msg[1]) {
 			case Server1.name:
 				var uid = Server1.admins.indexOf(msg[2]);
@@ -109,13 +116,13 @@ client.on('message', message => {
 				}
 				break;
 			default:
-				client.channels.get(cfg.channels_id.COMMAND_LINE).send(`Run ${prefix}shelp`);
+				client.channels.get(cfg.channels_id.COMMAND_LINE).send(`Run ${cfg.general.cmd_prefix}shelp`);
 				return;
 		}
 	};
 
-	if (message.content.startsWith(prefix + cfg.commands.general.remuser) && message.author.id == HOST) {
-		var msg = message.content.slice(prefix.length).split(' ');
+	if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.general.remuser) && message.author.id == HOST) {
+		var msg = message.content.slice(cfg.general.cmd_prefix.length).split(' ');
 		switch(msg[1]) {
 			case Server1.name:
 				var uid = Server1.admins.indexOf(msg[2]);
@@ -138,18 +145,18 @@ client.on('message', message => {
 				}
 				break;
 			default:
-				client.channels.get(cfg.channels_id.COMMAND_LINE).send(`Run ${prefix}shelp`);
+				client.channels.get(cfg.channels_id.COMMAND_LINE).send(`Run ${cfg.general.cmd_prefix}shelp`);
 				return;
 		}
 	};
 
-	if (message.content.startsWith(prefix + Server1.name)) {
-		cmd_to = message.content.slice(prefix.length).split(' ').slice(1).join(" ");
+	if (message.content.startsWith(cfg.general.cmd_prefix + Server1.name)) {
+		cmd_to = message.content.slice(cfg.general.cmd_prefix.length).split(' ').slice(1).join(" ");
 		issue_command(message.author.id, cmd_to, Server1.name);
 	};
 
-	if (message.content.startsWith(prefix + Server2.name)) {
-		cmd_to = message.content.slice(prefix.length).split(' ').slice(1).join(" ");
+	if (message.content.startsWith(cfg.general.cmd_prefix + Server2.name)) {
+		cmd_to = message.content.slice(cfg.general.cmd_prefix.length).split(' ').slice(1).join(" ");
 		issue_command(message.author.id, cmd_to, Server2.name);
 	};
 
@@ -174,7 +181,7 @@ async function issue_command(uid, cmd, server) {
 			port   = Server2.port;
 			break;
 		default:
-			client.channels.get(cfg.channels_id.COMMAND_LINE).send(`Run ${prefix}shelp`);
+			client.channels.get(cfg.channels_id.COMMAND_LINE).send(`Run ${cfg.general.cmd_prefix}shelp`);
 			return;
 	};
 	if (admins.includes(uid)) {
@@ -234,22 +241,23 @@ async function issue_command(uid, cmd, server) {
 };
 
 async function print_help() {
+	console.log("Function \"print_help\" called.");
 	var h = "Help contents:\n";
 	h += `> Host privileges:\n`;
-	h += `\`${prefix}adduser SERVER UID\` - adds user to server\n`;
-	h += `\`${prefix}remuser SERVER UID\` - removes user from server\n`;
-	h += `\`${prefix}luser SERVER\` - list of users in server\n`;
+	h += `\`${cfg.general.cmd_prefix}adduser SERVER UID\` - adds user to server\n`;
+	h += `\`${cfg.general.cmd_prefix}remuser SERVER UID\` - removes user from server\n`;
+	h += `\`${cfg.general.cmd_prefix}luser SERVER\` - list of users in server\n`;
 	h += `> Developer privileges:\n`;
-	h += `\`${prefix}shelp\` - displays this information\n`;
-	h += `\`${prefix}SERVER compile\` - runs compilation in the repo dir\n`;
-	h += `\`${prefix}SERVER deploy\` - moves compiled files and things defined in deploy.sh\n`;
-	h += `\`${prefix}SERVER update\` - updates local repo from master\n`;
-	h += `\`${prefix}SERVER clog\` - displays compile log\n`;
-	h += `\`${prefix}SERVER ulog\` - displays update log\n`;
-	h += `\`${prefix}SERVER dlog\` - displays DreamDaemon log\n`;
-	h += `\`${prefix}SERVER ddlog\` - retrieve dd.log file from the server\n`;
+	h += `\`${cfg.general.cmd_prefix}shelp\` - displays this information\n`;
+	h += `\`${cfg.general.cmd_prefix}SERVER compile\` - runs compilation in the repo dir\n`;
+	h += `\`${cfg.general.cmd_prefix}SERVER deploy\` - moves compiled files and things defined in deploy.sh\n`;
+	h += `\`${cfg.general.cmd_prefix}SERVER update\` - updates local repo from master\n`;
+	h += `\`${cfg.general.cmd_prefix}SERVER clog\` - displays compile log\n`;
+	h += `\`${cfg.general.cmd_prefix}SERVER ulog\` - displays update log\n`;
+	h += `\`${cfg.general.cmd_prefix}SERVER dlog\` - displays DreamDaemon log\n`;
+	h += `\`${cfg.general.cmd_prefix}SERVER ddlog\` - retrieve dd.log file from the server\n`;
 	h += `> Regular user privileges:\n`;
-	h += `\`${prefix}SERVER start|stop\` - start/stop server\n`;
+	h += `\`${cfg.general.cmd_prefix}SERVER start|stop\` - start/stop server\n`;
 	client.channels.get(cfg.channels_id.COMMAND_LINE).send(h);
 }
 
