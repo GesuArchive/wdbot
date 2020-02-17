@@ -38,7 +38,7 @@ const Server2	= JSON.parse(fs.readFileSync('./s2.json', 'utf8'));
 console.log("Second server settings loaded. Servers settings readed. Trying to initialize script body.");
 const client			= new Discord.Client();
 const cmd_channel	= client.channels.get(cfg.channels_id.COMMAND_LINE);
-const endround_channel	= client.channels.get(cfg.channels_id.ENDROUND)
+const endround_channel	= client.channels.get(cfg.channels_id.ENDROUND);
 
 client.on('ready', () => {
 	console.log(lang.greeting_log);
@@ -51,28 +51,35 @@ setInterval(checkOnline, 5000); // refreshes data about servers every 5 seconds
 // we use screens for DD and DM
 
 async function checkOnline(server) {
-	var s1_onlinestatus  = shell.exec('[ "$(screen -ls | grep ' + Server1.name + 'server)"  ] && echo ' + lang.server_online + ' || echo ' + lang.server_offline, { silent: true });
-	var s1_compilestatus = shell.exec('[ "$(screen -ls | grep ' + Server1.name + 'compile)" ] && echo COMPILATION_IN_PROCESS || echo NOT_COMPILING', { silent: true });
+	var s1_onlinestatus  = shell.exec(`[ "$(screen -ls | grep ${Server1.name}server)"  ] && echo ${lang.server_online} || echo ${lang.server_offline}`, { silent: true });
+	var s1_compilestatus = shell.exec(`[ "$(screen -ls | grep ${Server1.name}compile)" ] && echo ${lang.server_build_compiling} || echo ${lang.server_build_not_compiling}`, { silent: true });
 
-	var s2_onlinestatus  = shell.exec('[ "$(screen -ls | grep ' + Server2.name + 'server)"  ] && echo ' + lang.server_online + ' || echo ' + lang.server_offline, { silent: true });
-	var s2_compilestatus = shell.exec('[ "$(screen -ls | grep ' + Server2.name + 'compile)" ] && echo COMPILATION_IN_PROCESS || echo NOT_COMPILING', { silent: true });
+	var s2_onlinestatus  = shell.exec(`[ "$(screen -ls | grep ${Server2.name}server)"  ] && echo ${lang.server_online} || echo ${lang.server_offline}`, { silent: true });
+	var s2_compilestatus = shell.exec(`[ "$(screen -ls | grep ${Server2.name}compile)" ] && echo ${lang.server_build_compiling} || echo ${lang.server_build_not_compiling}`, { silent: true });
 
-	if (s1_compilestatus == "COMPILATION_IN_PROCESS\n") {
-		s1_onlinestatus = lang.server_build_compiling;
-	};
+	if (s1_compilestatus == lang.server_build_compiling) s1_onlinestatus = s1_compilestatus;
+	if (s2_compilestatus == lang.server_build_compiling) s2_onlinestatus = s2_compilestatus;
 
-	if (s2_compilestatus == "COMPILATION_IN_PROCESS\n") {
-		s2_onlinestatus = lang.server_build_compiling;
-	};
+	//if (typeof lastMinutes === 'undefined') var lastMinutes = today.getTime() - (1000 * 60 * 10) // 600 000 milisec - 10 minutes
 
-	client.channels.get(cfg.channels_id.COMMAND_LINE).setTopic(`${cfg.servers.first.Discord_show_name}: ${s1_onlinestatus} | ${cfg.servers.second.Discord_show_name}: ${s2_onlinestatus}`);
+	//if (Math.abs(today.getMinutes() - lastMinutes) >= 3) { // && (today.getMinutes()[-1] in [0, 5]
+	//if ((today.getMinutes()[-1] == 1) || (today.getMinutes()[-1] == 3) || (today.getMinutes()[-1] == 6) || (today.getMinutes()[-1] == 9)) {
+
+	var today = new Date();
+	if (today.getMonth() < 9) var date = today.getFullYear() + '.0' + (today.getMonth() + 1) + '.' + today.getDate();
+	var date = today.getFullYear() + '.' + (today.getMonth() + 1) + '.' + today.getDate();
+	var time = today.getHours() + ":00"; //+ today.getMinutes();
+	var dateTime = date + ', ' + time;
+
+	client.channels.get(cfg.channels_id.COMMAND_LINE).setTopic(` | ${cfg.servers.first.Discord_show_name}: ${s1_onlinestatus} | ${cfg.servers.second.Discord_show_name}: ${s2_onlinestatus} | Updated: ${dateTime} (1 hour)`);
+
 };
 
 if ((cfg.general.replays_avaliable) && (cfg.directories.DEMOS != "")) {
 	chokidar.watch(cfg.directories.DEMOS, {ignoreInitial: true, interval: 15000}).on('addDir', (event, path) => { // every 15 seconds
 		endround_channel.send(`${lang.endround_message}${event.slice(-4)} ${lang.endround_message2}${event.slice(-4)}`); // here is the channel where links to replays posted
 	});
-}
+};
 
 client.on('message', message => {
 	if (message.author.bot) return;
@@ -107,7 +114,7 @@ client.on('message', message => {
 			case Server1.name:
 				var uid = Server1.admins.indexOf(msg[2]);
 				if (uid == -1) {
-					Server1.admins.push(msg[2])
+					Server1.admins.push(msg[2]);
 					fs.writeFileSync('./s1.json', JSON.stringify(Server1, null, 4));
 					client.channels.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_added_to_server+msg[2]+lang.contoller_added_to_server2+msg[1]+lang.contoller_added_to_server3);
 				} else {
@@ -117,7 +124,7 @@ client.on('message', message => {
 			case Server2.name:
 				var uid = Server2.admins.indexOf(msg[2]);
 				if (uid == -1) {
-					Server2.admins.push(msg[2])
+					Server2.admins.push(msg[2]);
 					fs.writeFileSync('./s2.json', JSON.stringify(Server2, null, 4));
 					client.channels.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_added_to_server+msg[2]+lang.contoller_added_to_server2+msg[1]+lang.contoller_added_to_server3);
 				} else {
