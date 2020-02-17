@@ -30,12 +30,12 @@ if ((cfg.general.OUTPUT_LANGUAGE == "ENG") || (typeof(cfg.general.OUTPUT_LANGUAG
 
 if (typeof(lang.language_name) == "string") console.log(lang.select_lang + lang.language_name + ". " + lang.select_lang2);
 
-console.log("Trying to load servers settings.");
+console.log("Now reading servers settings. Trying to load first server settings.");
 const Server1	= JSON.parse(fs.readFileSync('./s1.json', 'utf8'));
-console.log("First server settings loaded.");
+console.log("First server settings loaded. Trying to load second server settings.");
 const Server2	= JSON.parse(fs.readFileSync('./s2.json', 'utf8'));
 
-console.log("Second server settings loaded.");
+console.log("Second server settings loaded. Servers settings readed. Trying to initialize script body.");
 const client			= new Discord.Client();
 const cmd_channel	= client.channels.get(cfg.channels_id.COMMAND_LINE);
 const endround_channel	= client.channels.get(cfg.channels_id.ENDROUND)
@@ -193,57 +193,84 @@ async function issue_command(uid, cmd, server) {
 			client.channels.get(cfg.channels_id.COMMAND_LINE).send(lang.run_help_for_help);
 			return;
 	};
+	console.log("Trying to load OS shell servers control paths.");
+	os_cmd_paths = {
+		deploy:						`sh ${cfg.directories.REPOS}repo_${sname}/tools/deploy.sh ${cfg.directories.REPOS}server_${sname}`,
+		compile:					`cd ${cfg.directories.REPOS}repo_${sname}/ && : > ../${sname}_compile.log && screen -dmS ${sname}compile -L -Logfile ../${sname}_compile.log DreamMaker tgstation.dme`,
+		update_compile:		`cd ${cfg.directories.REPOS}repo_${sname}/ && : > ../${sname}_update.log && : > ../${sname}_compile.log && git pull > ../${sname}_update.log && screen -dmS ${sname}compile -L -Logfile ../${sname}_compile.log DreamMaker tgstation.dme`,
+		update:						`cd ${cfg.directories.REPOS}repo_${sname}/ && : > ../${sname}_update.log && git pull > ../${sname}_update.log &`,
+		send_compile_log:	`cat ${cfg.directories.REPOS}${sname}_compile.log`,
+		send_update_log:	`cat ${cfg.directories.REPOS}${sname}_update.log`,
+		dlog:							`cat ${cfg.directories.PROD}${sname}_dd.log`,
+		ddlog:						`${cfg.directories.PROD}${sname}_dd.log`,
+		start1:						`[ "$(screen -ls | grep ${sname}server)"  ] && echo 1 || echo 0`,
+		start2:						`export LD_LIBRARY_PATH=${cfg.directories.PROD}server_${sname} && cd ${cfg.directories.PROD}server_${sname}/ && : > ../${sname}_dd.log && screen -dmS ${sname}server -L -Logfile ../${sname}_dd.log DreamDaemon tgstation.dmb -port ${port} -trusted -public -threads on -params config-directory=cfg`,
+		stop:							`screen -X -S ${sname}server quit`
+	}
+	console.log("OS shell servers control paths loaded.");
 	if (admins.includes(uid)) {
 		if (devs.includes(uid)) {
 			switch (cmd) {
 				case cfg.commands.build_control.deploy:
-					shell.exec(`sh ${cfg.directories.REPOS}repo_${sname}/tools/deploy.sh ${cfg.directories.REPOS}server_${sname}`, { silent: true });
-					client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Deployed.`);
+					client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to execute deploy build of server.`);
+					shell.exec(os_cmd_paths.deploy, { silent: true });
+					client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Deploy command executed.`);
 					break;
 				case cfg.commands.build_control.compile:
-					shell.exec('cd ' + cfg.directories.REPOS + 'repo_' + sname + '/ && : > ../' + sname + '_compile.log && screen -dmS ' + sname + 'compile -L -Logfile ../' + sname + '_compile.log DreamMaker tgstation.dme', { silent: true });
-					client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Compiling.`);
+					client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to execute compile build of server.`);
+					shell.exec(os_cmd_paths.compile, { silent: true });
+					client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Compile command executed. Compiling in progress.`);
 					break;
 				case cfg.commands.build_control.update_compile:
-					shell.exec('cd ' + cfg.directories.REPOS + 'repo_' + sname + '/ && : > ../' + sname + '_update.log && : > ../' + sname + '_compile.log && git pull > ../' + sname + '_update.log && screen -dmS ' + sname + 'compile -L -Logfile ../' + sname + '_compile.log DreamMaker tgstation.dme', { silent: true });
+					client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to execute bungle "auto+update+compile".`);
+					shell.exec(os_cmd_paths.update_compile, { silent: true });
 					client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Started Auto-update-compile.`);
 					break;
 				case cfg.commands.build_control.update:
-					shell.exec('cd ' + cfg.directories.REPOS + 'repo_' + sname + '/ && : > ../' + sname + '_update.log && git pull > ../' + sname + '_update.log &', { silent: true });
-					client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Updated.`);
+					client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to execute update.`);
+					shell.exec(os_cmd_paths.update, { silent: true });
+					client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Update command executed.`);
 					break;
 				case cfg.commands.build_control.send_compile_log:
-					var log = shell.exec('cat ' + cfg.directories.REPOS + sname + '_compile.log', { silent: true });
+					client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to send compile log.`);
+					var log = shell.exec(os_cmd_paths.send_compile_log, { silent: true });
 					client.channels.get(cfg.channels_id.COMMAND_LINE).send(`\`\`\`${log}\`\`\``);
 					break;
 				case cfg.commands.build_control.send_update_log:
-					var log = shell.exec('cat ' + cfg.directories.REPOS + sname + '_update.log', { silent: true });
+					client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to send update log.`);
+					var log = shell.exec(os_cmd_paths.send_update_log, { silent: true });
 					client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${log}`, { split: true });
 					break;
 				case cfg.commands.build_control.dlog:
-					var log = shell.exec('cat ' + cfg.directories.PROD + sname + '_dd.log', { silent: true });
+					client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to send dd log via "cat".`);
+					var log = shell.exec(os_cmd_paths.dlog, { silent: true });
 					client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${log}`, { split: true });
 					break;
 				case cfg.commands.build_control.ddlog:
-					if (fs.existsSync(cfg.directories.PROD + sname + '_dd.log')) {
-						client.channels.get(cfg.channels_id.COMMAND_LINE).send({ files: [cfg.directories.PROD + sname + '_dd.log'] });
+					client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to send dd log directly.`);
+					if (fs.existsSync(os_cmd_paths.ddlog)) {
+						client.channels.get(cfg.channels_id.COMMAND_LINE).send({ files: [os_cmd_paths.ddlog] });
 					} else {
-						client.channels.get(cfg.channels_id.COMMAND_LINE).send(`No file, <@${mts.author.id}>`);
+						client.channels.get(cfg.channels_id.COMMAND_LINE).send(`It seems that there is no required file, <@${mts.author.id}>.`);
 					};
 					break;
 			};
 		};
 		switch (cmd) {
 			case cfg.commands.work_control.start:
-				if (shell.exec('[ "$(screen -ls | grep ' + sname + 'server)"  ] && echo 1 || echo 0', { silent: true }) == "1\n") {
-					client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Not dead yet.`);
+				client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to check server's pulse.`);
+				if (shell.exec(os_cmd_paths.start1, { silent: true }) == "1\n") {
+					client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Server is still online, starting not required.`); // Not dead yet.
+					break;
 				};
-				shell.exec('export LD_LIBRARY_PATH=' + cfg.directories.PROD + 'server_' + sname + ' && cd ' + cfg.directories.PROD + 'server_' + sname + '/ && : > ../' + sname + '_dd.log && screen -dmS ' + sname + 'server -L -Logfile ../' + sname + '_dd.log DreamDaemon tgstation.dmb -port ' + port + ' -trusted -public -threads on -params config-directory=cfg', { silent: true });
-				client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Starting.`);
+				client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to start server.`);
+				shell.exec(os_cmd_paths.start2, { silent: true });
+				client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Start command executed. Starting.`);
 				break;
 			case cfg.commands.work_control.stop:
-				shell.exec('screen -X -S ' + sname + 'server quit', { silent: true });
-				client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Killed.`);
+				client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to stop server.`);
+				shell.exec(os_cmd_paths.stop, { silent: true });
+				client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Stop command executed. Stopped.`); // Killed
 				break;
 		};
 	};
