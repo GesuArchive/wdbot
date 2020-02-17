@@ -257,6 +257,19 @@ async function issue_command(uid, cmd, server) {
 			};
 		};
 		switch (cmd) {
+			case cfg.commands.work_control.restart:
+			case cfg.commands.work_control.stop:
+				if (cmd == cfg.commands.work_control.restart) client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Server emergency restart sequence engaged.`);
+				client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to stop server.`);
+				shell.exec(os_cmd_paths.stop, { silent: true });
+				client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Stop command executed. Stopped.`); // Killed
+				if (cmd == cfg.commands.work_control.restart) {
+					client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to start server.`);
+					shell.exec(os_cmd_paths.start2, { silent: true });
+					client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Start command executed. Starting.`);
+					client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Server emergency restart sequence finished.`);
+				}
+				break;
 			case cfg.commands.work_control.start:
 				client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to check server's pulse.`);
 				if (shell.exec(os_cmd_paths.start1, { silent: true }) == "1\n") {
@@ -266,11 +279,6 @@ async function issue_command(uid, cmd, server) {
 				client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to start server.`);
 				shell.exec(os_cmd_paths.start2, { silent: true });
 				client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Start command executed. Starting.`);
-				break;
-			case cfg.commands.work_control.stop:
-				client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to stop server.`);
-				shell.exec(os_cmd_paths.stop, { silent: true });
-				client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Stop command executed. Stopped.`); // Killed
 				break;
 		};
 	};

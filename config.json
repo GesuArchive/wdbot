@@ -35,6 +35,7 @@
       "ddlog": "ddlog"
     },
     "work_control": {
+    "restart": "restart",
     "start": "start",
     "stop": "stop"
     }
