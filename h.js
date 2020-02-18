@@ -6,7 +6,7 @@
 // Fuck.
 //------------------------------------------------------//
 
-var os_config_path = './config.json'
+const os_config_path = './config.json'
 
 console.log("[____-__-__T__:__:__.___Z] Script started. Trying to import modules.");
 

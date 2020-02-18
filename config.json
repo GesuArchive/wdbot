@@ -5,7 +5,10 @@
 
     "BOT_ACCESS_TOKEN": "AAA0000.AAA.AAA_AAA-AA-AAAAAA",
     "cmd_prefix":       "/",
-    "HOST_USER_ID":     "184761278634524673"
+    "HOST_USER_ID":     "184761278634524673",
+
+    "replays_avaliable": 0,
+    "url_for_replays":   "https://hub.station13.ru/replay/?roundid="
   },
   "channels_id": {
     "COMMAND_LINE": "654799849333719080",
@@ -19,6 +22,17 @@
     "LOC_RUS": "./localization/lang.ru.js",
     "S1_JSON": "./s1.json",
     "S2_JSON": "./s2.json",
+  },
+
+  "servers": {
+    "first": {
+      "avaliable": 1,
+      "Discord_show_name": "SERVER №1"
+    },
+    "second": {
+      "avaliable": 1,
+      "Discord_show_name": "SERVER №2"
+    }
   },
 
   "commands": {

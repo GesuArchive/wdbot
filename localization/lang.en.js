@@ -1,6 +1,6 @@
 require('log-timestamp');
 const fs  = require('fs');
-const cfg = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
+const cfg	= JSON.parse(fs.readFileSync('./config.json', 'utf8'));
 
 lang = {
   language_name : `English`,
@@ -34,7 +34,8 @@ lang = {
   contoller_to_remove_not_found2: `> in control `,
   contoller_to_remove_not_found3: ` server.`,
 
-  this_file_was_readed: `Localization file of ${lang.language_name} was readed.``
+  this_file_was_readed1: `Localization file of `,
+  this_file_was_readed2: ` was readed.`
 };
 
-console.log(lang.this_file_was_readed);
+console.log(lang.this_file_was_readed1+lang.language_name+lang.this_file_was_readed2);
