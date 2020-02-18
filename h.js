@@ -16,16 +16,16 @@ const fs				= require('fs');
 const chokidar	= require('chokidar');
 									require('log-timestamp');
 
-console.log("Importing modules done. Trying to load config files.");
+console.log("Importing modules done. Trying to load config files...");
 const cfg	= JSON.parse(fs.readFileSync(os_config_path, 'utf8'));
 
-console.log("Configs loaded, help command: " + cfg.general.cmd_prefix + cfg.commands.general.help + ". Trying to load localization files.");
+console.log("Configs loaded, help command: " + cfg.general.cmd_prefix + cfg.commands.general.help + ". Trying to load localization files...");
 if ((cfg.general.OUTPUT_LANGUAGE == "ENG") || (typeof(cfg.general.OUTPUT_LANGUAGE) != String))  {
-	console.log("According to settings, trying to loading file of language: English.");
+	console.log("According to settings, trying to loading file of language: English...");
 	const lang	= require(cfg.directories.LOC_ENG);
 	console.log("Localization file file required.");
 } else {
-	console.log("According to settings, trying to loading file of language: Russian.");
+	console.log("According to settings, trying to loading file of language: Russian...");
 	const lang	= require(cfg.directories.LOC_RUS);
 	console.log("Localization file file required.");
 };
@@ -37,7 +37,7 @@ const Server1	= JSON.parse(fs.readFileSync(cfg.directories.S1_JSON, 'utf8'));
 console.log(lang.server2_settings_loading);
 const Server2	= JSON.parse(fs.readFileSync(cfg.directories.S2_JSON, 'utf8'));
 
-console.log();
+console.log(lang.servers_settings_loaded);
 const client						= new Discord.Client();
 const cmd_channel				= client.channels.get(cfg.channels_id.COMMAND_LINE);
 const endround_channel	= client.channels.get(cfg.channels_id.ENDROUND);
@@ -206,7 +206,7 @@ async function issue_command(uid, cmd, server) {
 	os_cmds = {
 		server_name:			`${cfg.directories.REPOS}server_${sname}`,
 		server_repo:			`${cfg.directories.REPOS}repo_${sname}`,
-		server_name:			`${cfg.directories.REPOS}server_${sname}`,
+		server_prod_name:	`${cfg.directories.REPOS}server_${sname}`,
 	};
 	os_cmd_paths = {
 		deploy:						`sh ${os_cmds.server_repo}/tools/deploy.sh ${cfg.directories.REPOS}server_${sname}`,
@@ -218,7 +218,7 @@ async function issue_command(uid, cmd, server) {
 		dlog:							`cat ${cfg.directories.PROD}${sname}_dd.log`,
 		ddlog:						`${cfg.directories.PROD}${sname}_dd.log`,
 		start1:						`[ "$(screen -ls | grep ${sname}server)"  ] && echo 1 || echo 0`,
-		start2:						`export LD_LIBRARY_PATH=${cfg.directories.PROD}server_${sname} && cd ${cfg.directories.PROD}server_${sname}/ && : > ../${sname}_dd.log && screen -dmS ${sname}server -L -Logfile ../${sname}_dd.log DreamDaemon tgstation.dmb -port ${port} -trusted -public -threads on -params config-directory=cfg`,
+		start2:						`export LD_LIBRARY_PATH=${os_cmds.server_prod_name} && cd ${os_cmds.server_prod_name}/ && : > ../${sname}_dd.log && screen -dmS ${sname}server -L -Logfile ../${sname}_dd.log DreamDaemon tgstation.dmb -port ${port} -trusted -public -threads on -params config-directory=cfg`,
 		stop:							`screen -X -S ${sname}server quit`
 	};
 	console.log("OS shell servers control paths loaded.");
