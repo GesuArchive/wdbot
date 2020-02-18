@@ -203,11 +203,16 @@ async function issue_command(uid, cmd, server) {
 			return;
 	};
 	console.log("Trying to load OS shell servers control paths.");
+	os_cmds = {
+		server_name:			`${cfg.directories.REPOS}server_${sname}`,
+		server_repo:			`${cfg.directories.REPOS}repo_${sname}`,
+		server_name:			`${cfg.directories.REPOS}server_${sname}`,
+	};
 	os_cmd_paths = {
-		deploy:						`sh ${cfg.directories.REPOS}repo_${sname}/tools/deploy.sh ${cfg.directories.REPOS}server_${sname}`,
-		compile:					`cd ${cfg.directories.REPOS}repo_${sname}/ && : > ../${sname}_compile.log && screen -dmS ${sname}compile -L -Logfile ../${sname}_compile.log DreamMaker tgstation.dme`,
-		update_compile:		`cd ${cfg.directories.REPOS}repo_${sname}/ && : > ../${sname}_update.log && : > ../${sname}_compile.log && git pull > ../${sname}_update.log && screen -dmS ${sname}compile -L -Logfile ../${sname}_compile.log DreamMaker tgstation.dme`,
-		update:						`cd ${cfg.directories.REPOS}repo_${sname}/ && : > ../${sname}_update.log && git pull > ../${sname}_update.log &`,
+		deploy:						`sh ${os_cmds.server_repo}/tools/deploy.sh ${cfg.directories.REPOS}server_${sname}`,
+		compile:					`cd ${os_cmds.server_repo}/ && : > ../${sname}_compile.log && screen -dmS ${sname}compile -L -Logfile ../${sname}_compile.log DreamMaker tgstation.dme`,
+		update_compile:		`cd ${os_cmds.server_repo}/ && : > ../${sname}_update.log && : > ../${sname}_compile.log && git pull > ../${sname}_update.log && screen -dmS ${sname}compile -L -Logfile ../${sname}_compile.log DreamMaker tgstation.dme`,
+		update:						`cd ${os_cmds.server_repo}/ && : > ../${sname}_update.log && git pull > ../${sname}_update.log &`,
 		send_compile_log:	`cat ${cfg.directories.REPOS}${sname}_compile.log`,
 		send_update_log:	`cat ${cfg.directories.REPOS}${sname}_update.log`,
 		dlog:							`cat ${cfg.directories.PROD}${sname}_dd.log`,
@@ -215,7 +220,7 @@ async function issue_command(uid, cmd, server) {
 		start1:						`[ "$(screen -ls | grep ${sname}server)"  ] && echo 1 || echo 0`,
 		start2:						`export LD_LIBRARY_PATH=${cfg.directories.PROD}server_${sname} && cd ${cfg.directories.PROD}server_${sname}/ && : > ../${sname}_dd.log && screen -dmS ${sname}server -L -Logfile ../${sname}_dd.log DreamDaemon tgstation.dmb -port ${port} -trusted -public -threads on -params config-directory=cfg`,
 		stop:							`screen -X -S ${sname}server quit`
-	}
+	};
 	console.log("OS shell servers control paths loaded.");
 	if (admins.includes(uid)) {
 		if (devs.includes(uid)) {
