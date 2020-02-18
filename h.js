@@ -6,6 +6,8 @@
 // Fuck.
 //------------------------------------------------------//
 
+var os_config_path = './config.json'
+
 console.log("[____-__-__T__:__:__.___Z] Script started. Trying to import modules.");
 
 const Discord		= require('discord.js');
@@ -15,29 +17,29 @@ const chokidar	= require('chokidar');
 									require('log-timestamp');
 
 console.log("Importing modules done. Trying to load config files.");
-const cfg	= JSON.parse(fs.readFileSync('./config.json', 'utf8'));
-//const os_commands	= require('./path_config.js');
+const cfg	= JSON.parse(fs.readFileSync(os_config_path, 'utf8'));
 
 console.log("Configs loaded, help command: " + cfg.general.cmd_prefix + cfg.commands.general.help + ". Trying to load localization files.");
 if ((cfg.general.OUTPUT_LANGUAGE == "ENG") || (typeof(cfg.general.OUTPUT_LANGUAGE) != String))  {
-	const lang	= require('./localization/lang.en.js');
-	if (typeof(lang.language_name) != "string") console.log("Trying to selecting language: English.");
+	console.log("According to settings, trying to loading file of language: English.");
+	const lang	= require(cfg.directories.LOC_ENG);
+	console.log("Localization file file required.");
 } else {
-	const lang	= require('./localization/lang.ru.js');
-	if (typeof(lang.language_name) != "string") console.log("Trying to selecting language: Russian.");
-	//const lang	= JSON.parse(fs.readFileSync('localization/lang.ru', 'utf8')).lang_eng
+	console.log("According to settings, trying to loading file of language: Russian.");
+	const lang	= require(cfg.directories.LOC_RUS);
+	console.log("Localization file file required.");
 };
 
-if (typeof(lang.language_name) == "string") console.log(lang.select_lang + lang.language_name + ". " + lang.select_lang2);
+console.log(lang.select_lang + lang.language_name + ". " + lang.select_lang2);
 
-console.log("Now reading servers settings. Trying to load first server settings.");
-const Server1	= JSON.parse(fs.readFileSync('./s1.json', 'utf8'));
-console.log("First server settings loaded. Trying to load second server settings.");
-const Server2	= JSON.parse(fs.readFileSync('./s2.json', 'utf8'));
+console.log(lang.server1_settings_loading);
+const Server1	= JSON.parse(fs.readFileSync(cfg.directories.S1_JSON, 'utf8'));
+console.log(lang.server2_settings_loading);
+const Server2	= JSON.parse(fs.readFileSync(cfg.directories.S2_JSON, 'utf8'));
 
-console.log("Second server settings loaded. Servers settings readed. Trying to initialize script body.");
-const client			= new Discord.Client();
-const cmd_channel	= client.channels.get(cfg.channels_id.COMMAND_LINE);
+console.log();
+const client						= new Discord.Client();
+const cmd_channel				= client.channels.get(cfg.channels_id.COMMAND_LINE);
 const endround_channel	= client.channels.get(cfg.channels_id.ENDROUND);
 
 client.on('ready', () => {
@@ -153,7 +155,7 @@ client.on('message', message => {
 			case Server2.name:
 				var uid = Server2.admins.indexOf(msg[2]);
 				if (uid != -1) {
-					S22.admins.splice(Server2.admins.indexOf(msg[2]), 1);
+					Server2.admins.splice(Server2.admins.indexOf(msg[2]), 1);
 					fs.writeFileSync('./s2.json', JSON.stringify(Server2, null, 4));
 					client.channels.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_removed+msg[2]+lang.contoller_removed2+msg[1]+lang.contoller_removed3);
 				} else {

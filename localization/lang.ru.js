@@ -1,3 +1,4 @@
+require('log-timestamp');
 const fs  = require('fs');
 const cfg = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
 
@@ -6,12 +7,16 @@ lang = {
 
   select_lang : `Successfully selected language: `,
   select_lang2 : `Now output is localized.`,
-  greeting_log : "Script is initialized and client is ready. Waiting for commands…",
+  server1_settings_loading: "Now reading servers settings. Trying to load first server settings.",
+  server2_settings_loading: "First server settings loaded. Trying to load second server settings.",
+  servers_settings_loaded: "Second server settings loaded. Servers settings readed. Trying to initialize script body.",
+  greeting_log : "Script is initialized and client is ready. Waiting for commands…\n__________________________",
   greeting_print : `Bot script is successfully started and ready to serve you. Type \`${cfg.general.cmd_prefix}shelp\` for help.`,
   bot_status_playing : "with servers",
   server_online : "ONLINE",
   server_offline : "OFFLINE",
-  server_build_compiling : "COMPILING",
+  server_build_compiling : "ONLINE & COMPILING",
+  server_build_not_compiling : "ONLINE & NOT COMPILING",
   endround_message: `Round №`,
   endround_message2: `ended. Replay: ${cfg.url_for_replays}`,
   cmd_recived_help: "Сommand received: \"help\".",
@@ -28,4 +33,8 @@ lang = {
   contoller_to_remove_not_found: `No such UID <@`,
   contoller_to_remove_not_found2: `> in control `,
   contoller_to_remove_not_found3: ` server.`,
+
+  this_file_was_readed: `Localization file of ${lang.language_name} was readed.``
 };
+
+console.log(lang.this_file_was_readed);

@@ -4,40 +4,44 @@
     "AVAILABLE_OUTPUT_LANGUAGES": ["ENG", "RUS"],
 
     "BOT_ACCESS_TOKEN": "AAA0000.AAA.AAA_AAA-AA-AAAAAA",
-    "cmd_prefix": "/",
-    "HOST_USER_ID": "184761278634524673"
+    "cmd_prefix":       "/",
+    "HOST_USER_ID":     "184761278634524673"
   },
   "channels_id": {
     "COMMAND_LINE": "654799849333719080",
-    "ENDROUND": "594650207950471168"
+    "ENDROUND":     "594650207950471168"
   },
   "directories": {
-    "DEMOS": "/home/ubuntu/production/server_white/data/logs/demos/",
-    "REPOS": "/home/ubuntu/repos/",
-    "PROD":  "/home/ubuntu/production/"
+    "DEMOS":   "/home/ubuntu/production/server_white/data/logs/demos/",
+    "REPOS":   "/home/ubuntu/repos/",
+    "PROD":    "/home/ubuntu/production/",
+    "LOC_ENG": "./localization/lang.en.js",
+    "LOC_RUS": "./localization/lang.ru.js",
+    "S1_JSON": "./s1.json",
+    "S2_JSON": "./s2.json",
   },
 
   "commands": {
     "general": {
-      "help": "shelp",
+      "help":       "shelp",
       "whoisadmin": "luser",
-      "adduser": "adduser",
-      "remuser": "remuser"
+      "adduser":    "adduser",
+      "remuser":    "remuser"
     },
     "build_control": {
-      "deploy": "deploy",
-      "compile": "compile",
-      "update_compile": "uc",
-      "update": "update",
+      "deploy":           "deploy",
+      "compile":          "compile",
+      "update_compile":   "uc",
+      "update":           "update",
       "send_compile_log": "clog",
-      "send_update_log": "ulog",
-      "dlog": "dlog",
-      "ddlog": "ddlog"
+      "send_update_log":  "ulog",
+      "dlog":             "dlog",
+      "ddlog":            "ddlog"
     },
     "work_control": {
     "restart": "restart",
-    "start": "start",
-    "stop": "stop"
+    "start":   "start",
+    "stop":    "stop"
     }
   },
 	"debug": 1
