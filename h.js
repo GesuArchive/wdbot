@@ -8,7 +8,15 @@
 
 const os_config_path = './config.json'
 
-console.log("[____-__-__T__:__:__.___Z] Script started. Trying to import modules.");
+stat_msg = {
+  blank:		"______",
+  ok:				"  OK  ",
+  failed:		"FAILED",
+  boot:			" BOOT ",
+  command:	" CMND ",
+}
+
+console.log("[____-__-__T__:__:__.___Z]" + "\x1b[32m" + " Script started." + "\x1b[0m" + " Trying to import modules...");
 
 const Discord		= require('discord.js');
 const shell			= require('shelljs');
@@ -16,21 +24,21 @@ const fs				= require('fs');
 const chokidar	= require('chokidar');
 									require('log-timestamp');
 
-console.log("Importing modules done. Trying to load config files...");
+console.log("\x1b[32m" + "Importing modules done." + "\x1b[0m" + " Trying to load config files...");
 const cfg	= JSON.parse(fs.readFileSync(os_config_path, 'utf8'));
 
-console.log("Configs loaded, help command: " + cfg.general.cmd_prefix + cfg.commands.general.help + ". Trying to load localization files...");
+console.log("\x1b[32m" + "Configs loaded, help command: " + cfg.general.cmd_prefix + cfg.commands.general.help + "." + "\x1b[0m" + " Trying to load localization files...");
 if ((cfg.general.OUTPUT_LANGUAGE == "ENG") || (typeof(cfg.general.OUTPUT_LANGUAGE) != String))  {
-	console.log("According to settings, trying to loading file of language: English...");
+	console.log("According to configuration file, trying to loading file of language: English...");
 	const lang	= require(cfg.directories.LOC_ENG);
-	console.log("Localization file file required.");
+	console.log("\x1b[32m" + "Localization file file required.", "\x1b[0m");
 } else {
-	console.log("According to settings, trying to loading file of language: Russian...");
+	console.log("According to configuration, trying to loading file of language: Russian...");
 	const lang	= require(cfg.directories.LOC_RUS);
-	console.log("Localization file file required.");
+	console.log("\x1b[32m" + "Localization file file required.", "\x1b[0m");
 };
 
-console.log(lang.select_lang + lang.language_name + ". " + lang.select_lang2);
+console.log("\x1b[32m" + lang.select_lang + lang.language_name + ". " + lang.select_lang2);
 
 console.log(lang.server1_settings_loading);
 const Server1	= JSON.parse(fs.readFileSync(cfg.directories.S1_JSON, 'utf8'));
@@ -300,6 +308,7 @@ async function issue_command(uid, cmd, server) {
 
 async function print_help() {
 	if (cfg.script_debug) console.log("Function \"print_help\" called.");
+	console.log(arguments.callee.name);
 	var h = "Help contents:\n";
 	h += `> Host user privileges:\n`;
 	h += `\`${cfg.general.cmd_prefix}${cfg.commands.general.adduser} SERVER_NAME UID\` - adds user to server\n`;
@@ -320,4 +329,5 @@ async function print_help() {
 	client.channels.get(cfg.channels_id.COMMAND_LINE).send(h);
 }
 
+console.log("Script body is initialized. Trying to login and start servicing...");
 client.login(cfg.general.BOT_ACCESS_TOKEN);

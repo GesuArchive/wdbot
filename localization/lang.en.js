@@ -10,7 +10,7 @@ lang = {
   server1_settings_loading: "Now reading servers settings. Trying to load first server settings...",
   server2_settings_loading: "First server settings loaded. Trying to load second server settings...",
   servers_settings_loaded: "Second server settings loaded. All servers settings loaded. Trying to initialize script body...",
-  greeting_log : "Script is initialized and client is ready. Waiting for commands...\n__________________________",
+  greeting_log : "Client is ready. Waiting for commands...\n__________________________",
   greeting_print : `Bot script is successfully started and ready to serve you. Type \`${cfg.general.cmd_prefix}shelp\` for help.`,
   bot_status_playing : "with servers",
   server_online : "ONLINE",

@@ -1,5 +1,7 @@
-# White Dream Bot
-You need discord bot. If you don't have any just kill yourself.
+# Space Station 13 servers control bot
+
+This bot greatly simplifies the hosting of game servers. It is not necessary, but without it, the life of the host will be clearly more difficult.
+Runs on Linux, using Node.js® as engine and using Discord as input.
 
 ## How to use this
 0. Byond installed? Install it.
