@@ -1,22 +1,43 @@
 
-//------------------------------------------------------//
+//--------------------------------------------------------------------------//
 // White Dream bot used for BYOND serverfuck.
 // Author: Valtos
 // Use wisely and report bugs if you find any.
 // Fuck.
-//------------------------------------------------------//
+//--------------------------------------------------------------------------//
 
-const os_config_path = './config.json'
+const os_config_path = './config.json';
+
+// message consoles colors
+mclr = {
+	Rst:				"\x1b[0m",	FgBlack:		"\x1b[30m",
+	Bright:			"\x1b[1m",	FgRed:			"\x1b[31m",
+	Dim:				"\x1b[2m",	FgGreen:		"\x1b[32m",
+	Underscore:	"\x1b[4m",	FgYellow:		"\x1b[33m",
+	Blink:			"\x1b[5m",	FgBlue:			"\x1b[34m",
+	Reverse:		"\x1b[7m",	FgMagenta:	"\x1b[35m",
+	Hidden:			"\x1b[8m",	FgCyan:			"\x1b[36m",
+	FgWhite:														"\x1b[37m",
+};
 
 stat_msg = {
-  blank:		"______",
-  ok:				"  OK  ",
-  failed:		"FAILED",
-  boot:			" BOOT ",
-  command:	" CMND ",
-}
+  //blank:				mclr.Reset			+ "______" + mclr.Reset,
+  boot:					mclr.FgMagenta	+ " BOOT " + mclr.Rst, // FgMagenta
+  command:			mclr.FgYellow		+ " CMND " + mclr.Rst, // FgYellow
 
-console.log("[____-__-__T__:__:__.___Z]" + "\x1b[32m" + " Script started." + "\x1b[0m" + " Trying to import modules...");
+  done:					mclr.FgGreen		+ "  OK  " + mclr.Rst, // JOB_DONE
+  failed:				mclr.FgRed			+ "FAILED" + mclr.Rst, // JOB_FAILED
+  skipped:			mclr.Reset			+ " INFO " + mclr.Rst, // JOB_SKIPPED
+  timeout:			mclr.FgRed			+ " TIME " + mclr.Reset, // JOB_TIMEOUT
+
+  /* dependency:		mclr.FgYellow		+ "DEPEND" + mclr.Reset, // JOB_DEPENDENCY
+  assert:				mclr.FgYellow		+ "ASSERT" + mclr.Reset, // JOB_ASSERT
+  unsupported:	mclr.FgYellow		+ "UNSUPP" + mclr.Reset, // JOB_UNSUPPORTED
+  colleced:			mclr.Reset			+ "COLECT" + mclr.Reset, // JOB_COLLECTED
+  once:					mclr.FgRed			+ " ONCE " + mclr.Reset, // JOB_ONCE */
+};
+
+console.log(`${mclr.Rst}[____-__-__T__:__:__.___Z] [${stat_msg.boot}] Script started. Trying to import modules...`);
 
 const Discord		= require('discord.js');
 const shell			= require('shelljs');
@@ -31,14 +52,14 @@ console.log("\x1b[32m" + "Configs loaded, help command: " + cfg.general.cmd_pref
 if ((cfg.general.OUTPUT_LANGUAGE == "ENG") || (typeof(cfg.general.OUTPUT_LANGUAGE) != String))  {
 	console.log("According to configuration file, trying to loading file of language: English...");
 	const lang	= require(cfg.directories.LOC_ENG);
-	console.log("\x1b[32m" + "Localization file file required.", "\x1b[0m");
+	console.log("Localization file file required.");
 } else {
 	console.log("According to configuration, trying to loading file of language: Russian...");
 	const lang	= require(cfg.directories.LOC_RUS);
-	console.log("\x1b[32m" + "Localization file file required.", "\x1b[0m");
+	console.log("Localization file file required.");
 };
 
-console.log("\x1b[32m" + lang.select_lang + lang.language_name + ". " + lang.select_lang2);
+console.log(lang.select_lang + lang.language_name + ". " + lang.select_lang2);
 
 console.log(lang.server1_settings_loading);
 const Server1	= JSON.parse(fs.readFileSync(cfg.directories.S1_JSON, 'utf8'));
@@ -52,7 +73,7 @@ const endround_channel	= client.channels.get(cfg.channels_id.ENDROUND);
 
 client.on('ready', () => {
 	console.log(lang.greeting_log);
-	client.channels.get(cfg.channels_id.COMMAND_LINE).send(lang.greeting_print);
+	client.channels.get(cfg.channels_id.COMMAND_LINE).send(lang.greeting_print + mclr.Rst);
 	client.user.setActivity(lang.bot_status_playing);
 });
 
@@ -309,7 +330,7 @@ async function issue_command(uid, cmd, server) {
 async function print_help() {
 	if (cfg.script_debug) console.log("Function \"print_help\" called.");
 	console.log(arguments.callee.name);
-	var h = "Help contents:\n";
+	var h	= "Help contents:\n";
 	h += `> Host user privileges:\n`;
 	h += `\`${cfg.general.cmd_prefix}${cfg.commands.general.adduser} SERVER_NAME UID\` - adds user to server\n`;
 	h += `\`${cfg.general.cmd_prefix}${cfg.commands.general.remuser} SERVER_NAME UID\` - removes user from server\n`;
