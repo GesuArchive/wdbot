@@ -23,9 +23,11 @@ mclr = {
 stat_msg = {
   //blank:				mclr.Reset			+ "______" + mclr.Reset,
   boot:					mclr.FgMagenta	+ " BOOT " + mclr.Rst, // FgMagenta
+  load:					mclr.FgMagenta	+ " LOAD " + mclr.Rst, // FgMagenta
   command:			mclr.FgYellow		+ " CMND " + mclr.Rst, // FgYellow
+  not_cmd:			mclr.Reset			+ "NOTCMD" + mclr.Rst, // FgYellow
 
-  done:					mclr.FgGreen		+ "  OK  " + mclr.Rst, // JOB_DONE
+  ok:						mclr.FgGreen		+ "  OK  " + mclr.Rst, // JOB_DONE
   failed:				mclr.FgRed			+ "FAILED" + mclr.Rst, // JOB_FAILED
   skipped:			mclr.Reset			+ " INFO " + mclr.Rst, // JOB_SKIPPED
   timeout:			mclr.FgRed			+ " TIME " + mclr.Reset, // JOB_TIMEOUT
@@ -45,34 +47,34 @@ const fs				= require('fs');
 const chokidar	= require('chokidar');
 									require('log-timestamp');
 
-console.log("\x1b[32m" + "Importing modules done." + "\x1b[0m" + " Trying to load config files...");
+console.log(`[${stat_msg.load}] Importing modules done. Trying to load config files...`);
 const cfg	= JSON.parse(fs.readFileSync(os_config_path, 'utf8'));
 
-console.log("\x1b[32m" + "Configs loaded, help command: " + cfg.general.cmd_prefix + cfg.commands.general.help + "." + "\x1b[0m" + " Trying to load localization files...");
+console.log(`[${stat_msg.ok}] Configs loaded, help command: ${cfg.general.cmd_prefix}${cfg.commands.general.help}. Trying to load localization files...`);
 if ((cfg.general.OUTPUT_LANGUAGE == "ENG") || (typeof(cfg.general.OUTPUT_LANGUAGE) != String))  {
-	console.log("According to configuration file, trying to loading file of language: English...");
+	console.log(`[${stat_msg.load}] According to configuration file, trying to loading file of language: English...`);
 	const lang	= require(cfg.directories.LOC_ENG);
-	console.log("Localization file file required.");
+	console.log(`[${stat_msg.ok}] Localization file file required.`);
 } else {
-	console.log("According to configuration, trying to loading file of language: Russian...");
+	console.log(`[${stat_msg.loading}] According to configuration, trying to loading file of language: Russian...`);
 	const lang	= require(cfg.directories.LOC_RUS);
-	console.log("Localization file file required.");
+	console.log(`[${stat_msg.ok}] Localization file file required.`);
 };
 
-console.log(lang.select_lang + lang.language_name + ". " + lang.select_lang2);
+console.log(`[${stat_msg.ok}] ${lang.select_lang} ${lang.language_name}. ${lang.select_lang2}`);
 
-console.log(lang.server1_settings_loading);
+console.log(`[${stat_msg.load}] ${lang.server1_settings_loading}`);
 const Server1	= JSON.parse(fs.readFileSync(cfg.directories.S1_JSON, 'utf8'));
-console.log(lang.server2_settings_loading);
+console.log(`[${stat_msg.load}] ${lang.server2_settings_loading}`);
 const Server2	= JSON.parse(fs.readFileSync(cfg.directories.S2_JSON, 'utf8'));
 
-console.log(lang.servers_settings_loaded);
+console.log(`[${stat_msg.ok}] ${lang.servers_settings_loaded}`);
 const client						= new Discord.Client();
 const cmd_channel				= client.channels.get(cfg.channels_id.COMMAND_LINE);
 const endround_channel	= client.channels.get(cfg.channels_id.ENDROUND);
 
 client.on('ready', () => {
-	console.log(lang.greeting_log);
+	console.log(`[${stat_msg.boot}] ${lang.greeting_log}`);
 	client.channels.get(cfg.channels_id.COMMAND_LINE).send(lang.greeting_print + mclr.Rst);
 	client.user.setActivity(lang.bot_status_playing);
 });
@@ -114,12 +116,17 @@ if ((cfg.general.replays_avaliable) && (cfg.directories.DEMOS != "")) {
 
 client.on('message', message => {
 	if (message.author.bot) return;
-	console.log(`[${message.author.username}] [${message.channel.name}]: ${message.content}`);
 	if (message.channel != client.channels.get(cfg.channels_id.COMMAND_LINE)) return;
-	if (!message.content.startsWith(cfg.general.cmd_prefix)) return;
+	if (!message.content.startsWith(cfg.general.cmd_prefix)) {
+		console.log(`[${stat_msg.not_cmd}] (${message.author.username}) {${message.channel.name}}: ${message.content}`);
+		return;
+	} else {
+		console.log(`[${stat_msg.command}] (${message.author.username}) {${message.channel.name}}: ${message.content}`);
+		client.channels.get(cfg.channels_id.COMMAND_LINE).send(`\`\`\`Incoming command detected, trying to parse.\`\`\``);
+	};
 
 	if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.general.help)) {
-		if (cfg.script_debug) console.log(lang.cmd_recived_help);
+		if (cfg.script_debug) console.log(stat_msg.info + " " + lang.cmd_recived_help);
 		print_help();
 		return;
 	};
@@ -134,6 +141,7 @@ client.on('message', message => {
 				client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${Server2.admins}`);
 				break;
 			default:
+				client.channels.get(cfg.channels_id.COMMAND_LINE).send(`No avaliable servers with entered name is not detected.`);
 				client.channels.get(cfg.channels_id.COMMAND_LINE).send(lang.run_help_for_help);
 				return;
 		}
@@ -231,7 +239,7 @@ async function issue_command(uid, cmd, server) {
 			client.channels.get(cfg.channels_id.COMMAND_LINE).send(lang.run_help_for_help);
 			return;
 	};
-	console.log("Trying to load OS shell servers control paths.");
+	console.log(`${stat_msg.load} Trying to load OS shell servers control paths.`);
 	os_cmds = {
 		server_name:			`${cfg.directories.REPOS}server_${sname}`,
 		server_repo:			`${cfg.directories.REPOS}repo_${sname}`,
@@ -250,7 +258,7 @@ async function issue_command(uid, cmd, server) {
 		start2:						`export LD_LIBRARY_PATH=${os_cmds.server_prod_name} && cd ${os_cmds.server_prod_name}/ && : > ../${sname}_dd.log && screen -dmS ${sname}server -L -Logfile ../${sname}_dd.log DreamDaemon tgstation.dmb -port ${port} -trusted -public -threads on -params config-directory=cfg`,
 		stop:							`screen -X -S ${sname}server quit`
 	};
-	console.log("OS shell servers control paths loaded.");
+	console.log(`${stat_msg.load} OS shell servers control paths loaded.`);
 	if (admins.includes(uid)) {
 		if (devs.includes(uid)) {
 			switch (cmd) {
@@ -328,8 +336,8 @@ async function issue_command(uid, cmd, server) {
 };
 
 async function print_help() {
-	if (cfg.script_debug) console.log("Function \"print_help\" called.");
-	console.log(arguments.callee.name);
+	if (cfg.script_debug) console.log(`${stat_msg.info} Function \"print_help\" called.`);
+	//console.log(arguments.callee.name);
 	var h	= "Help contents:\n";
 	h += `> Host user privileges:\n`;
 	h += `\`${cfg.general.cmd_prefix}${cfg.commands.general.adduser} SERVER_NAME UID\` - adds user to server\n`;
@@ -350,5 +358,7 @@ async function print_help() {
 	client.channels.get(cfg.channels_id.COMMAND_LINE).send(h);
 }
 
-console.log("Script body is initialized. Trying to login and start servicing...");
+console.log(`[${stat_msg.boot}] Script body is initialized. Trying to login and start servicing...`);
 client.login(cfg.general.BOT_ACCESS_TOKEN);
+
+//trap `[____-__-__T__:__:__.___Z] [${stat_msg.ok}] Interruption detected, shutting down... ; exit 1`;

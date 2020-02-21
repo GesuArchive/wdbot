@@ -38,4 +38,4 @@ lang = {
   this_file_was_readed2: `» language was readed.`
 };
 
-console.log(lang.this_file_was_readed1+lang.language_name+lang.this_file_was_readed2);
+console.log("         " + lang.this_file_was_readed1 + lang.language_name + lang.this_file_was_readed2);
