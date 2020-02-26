@@ -355,7 +355,20 @@ async function print_help() {
 	h += `> Regular user privileges:\n`;
 	h += `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.work_control.start}\` - start server\n`;
 	h += `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.work_control.stop}\` - stop server\n`;
-	client.channels.get(cfg.channels_id.COMMAND_LINE).send(h);
+	//client.channels.get(cfg.channels_id.COMMAND_LINE).send(h);
+	// inside a command, event listener, etc.
+	exampleEmbed = new Discord.RichEmbed()
+		.setColor('#0099ff')
+		.setAuthor('Help contents:', 'https://i.imgur.com/wSTFkRM.png')
+		.addField('```Host user privileges:```', `
+\`${cfg.general.cmd_prefix}${cfg.commands.general.adduser} SERVER_NAME UID\` - adds user to server
+\`${cfg.general.cmd_prefix}${cfg.commands.general.remuser} SERVER_NAME UID\` - removes user from server
+\`${cfg.general.cmd_prefix}${cfg.commands.general.whoisadmin} SERVER_NAME\` - list of users in server
+		`)
+		.addBlankField()
+		.setTimestamp()
+		.setFooter('', 'https://i.imgur.com/wSTFkRM.png');
+	client.channels.get(cfg.channels_id.COMMAND_LINE).send(exampleEmbed);
 }
 
 console.log(`[${stat_msg.boot}] Script body is initialized. Trying to login and start servicing...`);
