@@ -6,6 +6,7 @@
 // Fuck.
 //--------------------------------------------------------------------------//
 
+process.chdir('/home/ubuntu/wdbot/');
 const os_config_path = './config.json';
 
 // message consoles colors
@@ -29,7 +30,7 @@ stat_msg = {
 
   ok:						mclr.FgGreen		+ "  OK  " + mclr.Rst, // JOB_DONE
   failed:				mclr.FgRed			+ "FAILED" + mclr.Rst, // JOB_FAILED
-  skipped:			mclr.Rst				+ " INFO " + mclr.Rst, // JOB_SKIPPED
+  info:					mclr.Rst				+ " INFO " + mclr.Rst, // JOB_SKIPPED
   timeout:			mclr.FgRed			+ " TIME " + mclr.Rst, // JOB_TIMEOUT
 
   /* dependency:		mclr.FgYellow		+ "DEPEND" + mclr.Rst, // JOB_DEPENDENCY
@@ -46,6 +47,8 @@ const shell			= require('shelljs');
 const fs				= require('fs');
 const chokidar	= require('chokidar');
 									require('log-timestamp');
+
+console.log(`[${stat_msg.info}] This platform is: ${process.platform}`);
 
 console.log(`[${stat_msg.load}] Importing modules done. Trying to load config files...`);
 const cfg	= JSON.parse(fs.readFileSync(os_config_path, 'utf8'));
@@ -74,7 +77,9 @@ const cmd_channel				= client.channels.get(cfg.channels_id.COMMAND_LINE);
 const endround_channel	= client.channels.get(cfg.channels_id.ENDROUND);
 
 client.on('ready', () => {
-	console.log(`[${stat_msg.boot}] ${lang.greeting_log}${mclr.Rst}`);
+	var client_is_ready = true;
+	console.log(`[${stat_msg.info}] Logged in as «${client.user.tag}».`);
+	console.log(`[${stat_msg.boot}] ${lang.greeting_log}${mclr.Rst}`)
 	commandOutputEmbed = new Discord.RichEmbed()
 		.setColor('#008000') // green
 		.setAuthor(lang.greeting_print)
@@ -129,13 +134,22 @@ client.on('message', message => {
 		commandOutputEmbed = new Discord.RichEmbed()
 			.setColor('#FFFF00') // yellow
 			.setAuthor('Сommand recognized, executing. If nothing printed, that can be error.')
-			.setTimestamp()
 		client.channels.get(cfg.channels_id.COMMAND_LINE).send(commandOutputEmbed);
 	};
 
 	if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.general.help)) {
 		if (cfg.script_debug) console.log(stat_msg.info + " " + lang.cmd_recived_help);
 		print_help();
+		return;
+	};
+
+	if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.nodejs.version)) {
+		client.channels.get(cfg.channels_id.COMMAND_LINE).send(`Node.js version: ${process.version}`);
+		return;
+	};
+
+	if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.nodejs.uptime)) {
+		client.channels.get(cfg.channels_id.COMMAND_LINE).send(`Current Node.js process uptime: ${process.uptime()}`);
 		return;
 	};
 
@@ -346,9 +360,12 @@ async function issue_command(uid, cmd, server) {
 async function print_help() {
 	if (cfg.script_debug) console.log(`${stat_msg.info} Function \"print_help\" called.`);
 	//console.log(arguments.callee.name);
+
 	var h	= 	`\`${cfg.general.cmd_prefix}${cfg.commands.general.adduser} SERVER_NAME UID\` — adds user to server\n`;
 	h +=			`\`${cfg.general.cmd_prefix}${cfg.commands.general.remuser} SERVER_NAME UID\` — removes user from server\n`;
 	h +=			`\`${cfg.general.cmd_prefix}${cfg.commands.general.whoisadmin} SERVER_NAME\` — list of users in server\n`;
+	h +=			`\`${cfg.general.cmd_prefix}${cfg.commands.nodejs.version}\` — displays the Node.js version string.\n`;
+	h +=			`\`${cfg.general.cmd_prefix}${cfg.commands.nodejs.uptime}\` — displays uptime in seconds of the current Node.js process running.\n`;
 
 	var h2	= `\`${cfg.general.cmd_prefix}${cfg.commands.general.help}\` — displays this information\n`;
 	h2 +=			`\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.compile}\` — runs compilation in the repo dir\n`;
@@ -374,7 +391,23 @@ async function print_help() {
 	client.channels.get(cfg.channels_id.COMMAND_LINE).send(commandOutputEmbed);
 }
 
-console.log(`[${stat_msg.boot}] Script body is initialized. Trying to login and start servicing...`);
+console.log(`[${stat_msg.boot}] Trying to login and start servicing...`);
 client.login(cfg.general.BOT_ACCESS_TOKEN);
 
 //trap `[____-__-__T__:__:__.___Z] [${stat_msg.ok}] Interruption detected, shutting down... ; exit 1`;
+
+
+
+console.log ('Script body is initialized. ');
+
+//graceful shutdown
+process.on('SIGINT', function() { console.log("Caught interrupt signal (CTRL-C)"); process.exit(1) });
+process.on('SIGQUIT', function() { console.log("Caught interrupt signal (keyboard quit action)"); process.exit(1) });
+process.on('SIGTERM', function() { console.log("Caught interrupt signal (operating system kill)"); process.exit(1) });
+
+process.on('exit', code => {
+  console.log (`Exiting. Exit code: ${code}`);
+  // client.channels.get(cfg.channels_id.COMMAND_LINE).send("Script stopping die external command.");
+  // client.user.setStatus("offline");
+  process.exit(1);
+});
