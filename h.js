@@ -21,22 +21,22 @@ mclr = {
 };
 
 stat_msg = {
-  //blank:				mclr.Reset			+ "______" + mclr.Reset,
+  //blank:				mclr.Rst			+ "______" + mclr.Rst,
   boot:					mclr.FgMagenta	+ " BOOT " + mclr.Rst, // FgMagenta
   load:					mclr.FgMagenta	+ " LOAD " + mclr.Rst, // FgMagenta
   command:			mclr.FgYellow		+ " CMND " + mclr.Rst, // FgYellow
-  not_cmd:			mclr.Reset			+ "NOTCMD" + mclr.Rst, // FgYellow
+  not_cmd:			mclr.Rst				+ "NOTCMD" + mclr.Rst, // FgYellow
 
   ok:						mclr.FgGreen		+ "  OK  " + mclr.Rst, // JOB_DONE
   failed:				mclr.FgRed			+ "FAILED" + mclr.Rst, // JOB_FAILED
-  skipped:			mclr.Reset			+ " INFO " + mclr.Rst, // JOB_SKIPPED
-  timeout:			mclr.FgRed			+ " TIME " + mclr.Reset, // JOB_TIMEOUT
+  skipped:			mclr.Rst				+ " INFO " + mclr.Rst, // JOB_SKIPPED
+  timeout:			mclr.FgRed			+ " TIME " + mclr.Rst, // JOB_TIMEOUT
 
-  /* dependency:		mclr.FgYellow		+ "DEPEND" + mclr.Reset, // JOB_DEPENDENCY
-  assert:				mclr.FgYellow		+ "ASSERT" + mclr.Reset, // JOB_ASSERT
-  unsupported:	mclr.FgYellow		+ "UNSUPP" + mclr.Reset, // JOB_UNSUPPORTED
-  colleced:			mclr.Reset			+ "COLECT" + mclr.Reset, // JOB_COLLECTED
-  once:					mclr.FgRed			+ " ONCE " + mclr.Reset, // JOB_ONCE */
+  /* dependency:		mclr.FgYellow		+ "DEPEND" + mclr.Rst, // JOB_DEPENDENCY
+  assert:				mclr.FgYellow		+ "ASSERT" + mclr.Rst, // JOB_ASSERT
+  unsupported:	mclr.FgYellow		+ "UNSUPP" + mclr.Rst, // JOB_UNSUPPORTED
+  colleced:			mclr.Rst				+ "COLECT" + mclr.Rst, // JOB_COLLECTED
+  once:					mclr.FgRed			+ " ONCE " + mclr.Rst, // JOB_ONCE */
 };
 
 console.log(`${mclr.Rst}[____-__-__T__:__:__.___Z] [${stat_msg.boot}] Script started. Trying to import modules...`);
@@ -74,8 +74,12 @@ const cmd_channel				= client.channels.get(cfg.channels_id.COMMAND_LINE);
 const endround_channel	= client.channels.get(cfg.channels_id.ENDROUND);
 
 client.on('ready', () => {
-	console.log(`[${stat_msg.boot}] ${lang.greeting_log}`);
-	client.channels.get(cfg.channels_id.COMMAND_LINE).send(lang.greeting_print + mclr.Rst);
+	console.log(`[${stat_msg.boot}] ${lang.greeting_log}${mclr.Rst}`);
+	commandOutputEmbed = new Discord.RichEmbed()
+		.setColor('#008000') // green
+		.setAuthor(lang.greeting_print)
+		.setTimestamp()
+	client.channels.get(cfg.channels_id.COMMAND_LINE).send(commandOutputEmbed);
 	client.user.setActivity(lang.bot_status_playing);
 });
 
@@ -122,7 +126,11 @@ client.on('message', message => {
 		return;
 	} else {
 		console.log(`[${stat_msg.command}] (${message.author.username}) {${message.channel.name}}: ${message.content}`);
-		client.channels.get(cfg.channels_id.COMMAND_LINE).send(`\`\`\`Incoming command detected, trying to parse.\`\`\``);
+		commandOutputEmbed = new Discord.RichEmbed()
+			.setColor('#FFFF00') // yellow
+			.setAuthor('Сommand recognized, executing. If nothing printed, that can be error.')
+			.setTimestamp()
+		client.channels.get(cfg.channels_id.COMMAND_LINE).send(commandOutputEmbed);
 	};
 
 	if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.general.help)) {
@@ -338,37 +346,32 @@ async function issue_command(uid, cmd, server) {
 async function print_help() {
 	if (cfg.script_debug) console.log(`${stat_msg.info} Function \"print_help\" called.`);
 	//console.log(arguments.callee.name);
-	var h	= "Help contents:\n";
-	h += `> Host user privileges:\n`;
-	h += `\`${cfg.general.cmd_prefix}${cfg.commands.general.adduser} SERVER_NAME UID\` - adds user to server\n`;
-	h += `\`${cfg.general.cmd_prefix}${cfg.commands.general.remuser} SERVER_NAME UID\` - removes user from server\n`;
-	h += `\`${cfg.general.cmd_prefix}${cfg.commands.general.whoisadmin} SERVER_NAME\` - list of users in server\n`;
-	h += `> Developer user privileges:\n`;
-	h += `\`${cfg.general.cmd_prefix}${cfg.commands.general.help}\` - displays this information\n`;
-	h += `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.compile}\` - runs compilation in the repo dir\n`;
-	h += `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.deploy}\` - moves compiled files and things defined in deploy.sh\n`;
-	h += `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.update}\` - updates local repo from master\n`;
-	h += `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.send_compile_log}\` - sends compile log file\n`;
-	h += `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.send_update_log}\` - sends update log file\n`;
-	h += `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.dlog}\` - displays DreamDaemon log\n`;
-	h += `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.ddlog}\` - retrieve dd.log file from the server\n`;
-	h += `> Regular user privileges:\n`;
-	h += `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.work_control.start}\` - start server\n`;
-	h += `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.work_control.stop}\` - stop server\n`;
-	//client.channels.get(cfg.channels_id.COMMAND_LINE).send(h);
+	var h	= 	`\`${cfg.general.cmd_prefix}${cfg.commands.general.adduser} SERVER_NAME UID\` — adds user to server\n`;
+	h +=			`\`${cfg.general.cmd_prefix}${cfg.commands.general.remuser} SERVER_NAME UID\` — removes user from server\n`;
+	h +=			`\`${cfg.general.cmd_prefix}${cfg.commands.general.whoisadmin} SERVER_NAME\` — list of users in server\n`;
+
+	var h2	= `\`${cfg.general.cmd_prefix}${cfg.commands.general.help}\` — displays this information\n`;
+	h2 +=			`\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.compile}\` — runs compilation in the repo dir\n`;
+	h2 +=			`\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.deploy}\` — moves compiled files and defined in «deploy.sh»\n`;
+	h2 +=			`\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.update}\` — updates local repo from master\n`;
+	h2 +=			`\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.send_compile_log}\` — sends compile log file\n`;
+	h2 +=			`\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.send_update_log}\` — sends update log file\n`;
+	h2 +=			`\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.dlog}\` — displays DreamDaemon log\n`;
+	h2 +=			`\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.ddlog}\` — retrieve dd.log file from the server\n`;
+
+	var h3	= `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.work_control.start}\` — start server\n`;
+	h3 +=			`\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.work_control.stop}\` — stop server\n`;
+	h3 +=			`\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.work_control.restart}\` — restart server\n`;
 	// inside a command, event listener, etc.
-	exampleEmbed = new Discord.RichEmbed()
+	commandOutputEmbed = new Discord.RichEmbed()
 		.setColor('#0099ff')
 		.setAuthor('Help contents:', 'https://i.imgur.com/wSTFkRM.png')
-		.addField('```Host user privileges:```', `
-\`${cfg.general.cmd_prefix}${cfg.commands.general.adduser} SERVER_NAME UID\` - adds user to server
-\`${cfg.general.cmd_prefix}${cfg.commands.general.remuser} SERVER_NAME UID\` - removes user from server
-\`${cfg.general.cmd_prefix}${cfg.commands.general.whoisadmin} SERVER_NAME\` - list of users in server
-		`)
-		.addBlankField()
+		.addField('• Host user privileges:', h)
+		.addField('• Developer user privileges:', h2)
+		.addField('• Regular user privileges:', h3)
 		.setTimestamp()
 		.setFooter('', 'https://i.imgur.com/wSTFkRM.png');
-	client.channels.get(cfg.channels_id.COMMAND_LINE).send(exampleEmbed);
+	client.channels.get(cfg.channels_id.COMMAND_LINE).send(commandOutputEmbed);
 }
 
 console.log(`[${stat_msg.boot}] Script body is initialized. Trying to login and start servicing...`);
