@@ -28,10 +28,10 @@ stat_msg = {
   command:   mclr.FgYellow  + " CMND " + mclr.Rst, // FgYellow
   not_cmd:   mclr.Rst       + "NOTCMD" + mclr.Rst, // FgYellow
 
-  ok:      mclr.FgGreen + "  OK  " + mclr.Rst, // JOB_DONE
-  failed:  mclr.FgRed   + "FAILED" + mclr.Rst, // JOB_FAILED
-  info:    mclr.Rst     + " INFO " + mclr.Rst, // JOB_SKIPPED
-  timeout: mclr.FgRed   + " TIME " + mclr.Rst, // JOB_TIMEOUT
+  ok:      mclr.FgGreen  + "  OK  " + mclr.Rst, // JOB_DONE
+  failed:  mclr.FgRed    + "FAILED" + mclr.Rst, // JOB_FAILED
+  info:    mclr.Rst      + " INFO " + mclr.Rst, // JOB_SKIPPED
+  warning: mclr.FgYellow + "WARNIN" + mclr.FgYellow, // WARNING  // JOB_TIMEOUT
 
   /* dependency:  mclr.FgYellow  + "DEPEND" + mclr.Rst, // JOB_DEPENDENCY
   assert:      mclr.FgYellow  + "ASSERT" + mclr.Rst, // JOB_ASSERT
@@ -40,13 +40,23 @@ stat_msg = {
   once:        mclr.FgRed     + " ONCE " + mclr.Rst, // JOB_ONCE */
 };
 
-console.log(`${mclr.Rst}[____-__-__T__:__:__.___Z] [${stat_msg.boot}] Script started. Trying to import modules...`);
+console.log(`${mclr.Rst}[____-__-__T__:__:__.___Z] [${stat_msg.boot}] Script started. Trying to check elevated privileges...`);
+
+/*
+const isRoot = require('is-root');
+
+if isRoot() {
+  console.log(`${mclr.Rst}[____-__-__T__:__:__.___Z] [${stat_msg.ok}] Elevated privileges confirmed. Trying to import modules...`);
+} else {
+  console.log(`${mclr.Rst}[____-__-__T__:__:__.___Z] [${stat_msg.warning}] Elevated privileges is NOT confirmed. Launch as root. Exiting...`);
+  return;
+};*/
 
 const Discord  = require('discord.js');
-const shell   = require('shelljs');
-const fs    = require('fs');
+const shell    = require('shelljs');
+const fs       = require('fs');
 const chokidar = require('chokidar');
-         require('log-timestamp');
+require('log-timestamp');
 
 console.log(`[${stat_msg.info}] This platform is: ${process.platform}`);
 
@@ -389,7 +399,7 @@ async function print_help() {
     .setTimestamp()
     .setFooter('', 'https://i.imgur.com/wSTFkRM.png');
   client.channels.get(cfg.channels_id.COMMAND_LINE).send(commandOutputEmbed);
-}
+};
 
 console.log(`[${stat_msg.boot}] Trying to login and start servicing...`);
 client.login(cfg.general.BOT_ACCESS_TOKEN);
@@ -403,7 +413,7 @@ client.on("disconnect", () => client.console.warn("Bot is disconnecting..."))
 
 
 
-console.log ('Script body is initialized. ');
+console.log('Script body is initialized.');
 
 //graceful shutdown
 process.on('SIGINT', function() { console.log("Caught interrupt signal (CTRL-C)"); process.exit(1) });
