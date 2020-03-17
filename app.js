@@ -83,8 +83,8 @@ const Server2 = JSON.parse(fs.readFileSync(cfg.directories.S2_JSON, 'utf8'));
 
 console.log(`[${stat_msg.ok}] ${lang.servers_settings_loaded}`);
 const client      = new Discord.Client();
-const cmd_channel    = client.channels.get(cfg.channels_id.COMMAND_LINE);
-const endround_channel = client.channels.get(cfg.channels_id.ENDROUND);
+const cmd_channel    = client.channels.cache.get(cfg.channels_id.COMMAND_LINE);
+const endround_channel = client.channels.cache.get(cfg.channels_id.ENDROUND);
 
 client.on('ready', () => {
   var client_is_ready = true;
@@ -94,7 +94,7 @@ client.on('ready', () => {
     .setColor('#008000') // green
     .setAuthor(lang.greeting_print)
     .setTimestamp()
-  client.channels.get(cfg.channels_id.COMMAND_LINE).send(commandOutputEmbed);
+  client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(commandOutputEmbed);
   client.user.setActivity(lang.bot_status_playing);
 });
 
@@ -123,7 +123,7 @@ async function checkOnline(server) {
   var time = today.getHours() + ":00"; //+ today.getMinutes();
   var dateTime = date + ', ' + time;
 
-  client.channels.get(cfg.channels_id.COMMAND_LINE).setTopic(` | ${cfg.servers.first.Discord_show_name}: ${s1_onlinestatus} | ${cfg.servers.second.Discord_show_name}: ${s2_onlinestatus} | Updated: ${dateTime} (1 hour)`);
+  client.channels.cache.get(cfg.channels_id.COMMAND_LINE).setTopic(` | ${cfg.servers.first.Discord_show_name}: ${s1_onlinestatus} | ${cfg.servers.second.Discord_show_name}: ${s2_onlinestatus} | Updated: ${dateTime} (1 hour)`);
 
 };
 
@@ -135,7 +135,7 @@ if ((cfg.general.replays_avaliable) && (cfg.directories.DEMOS != "")) {
 
 client.on('message', message => {
   if (message.author.bot) return;
-  if (message.channel != client.channels.get(cfg.channels_id.COMMAND_LINE)) return;
+  if (message.channel != client.channels.cache.get(cfg.channels_id.COMMAND_LINE)) return;
   if (!message.content.startsWith(cfg.general.cmd_prefix)) {
     console.log(`[${stat_msg.not_cmd}] (${message.author.username}) {${message.channel.name}}: ${message.content}`);
     return;
@@ -144,7 +144,7 @@ client.on('message', message => {
     commandOutputEmbed = new Discord.RichEmbed()
     .setColor('#FFFF00') // yellow
     .setAuthor('Сommand recognized, executing. If nothing printed, that can be error.')
-  client.channels.get(cfg.channels_id.COMMAND_LINE).send(commandOutputEmbed);
+  client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(commandOutputEmbed);
   };
 
   if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.general.help)) {
@@ -154,12 +154,12 @@ client.on('message', message => {
   };
 
   if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.nodejs.version)) {
-    client.channels.get(cfg.channels_id.COMMAND_LINE).send(`Node.js version: ${process.version}`);
+    client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`Node.js version: ${process.version}`);
     return;
   };
 
   if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.nodejs.uptime)) {
-    client.channels.get(cfg.channels_id.COMMAND_LINE).send(`Current Node.js process uptime: ${process.uptime()}`);
+    client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`Current Node.js process uptime: ${process.uptime()}`);
     return;
   };
 
@@ -167,14 +167,14 @@ client.on('message', message => {
     var msg = message.content.slice(cfg.general.cmd_prefix.length).split(' ');
     switch(msg[1]) {
     case Server1.name:
-      client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${Server1.admins}`);
+      client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${Server1.admins}`);
       break;
     case Server2.name:
-      client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${Server2.admins}`);
+      client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${Server2.admins}`);
       break;
     default:
-      client.channels.get(cfg.channels_id.COMMAND_LINE).send(`No avaliable servers with entered name is not detected.`);
-      client.channels.get(cfg.channels_id.COMMAND_LINE).send(lang.run_help_for_help);
+      client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`No avaliable servers with entered name is not detected.`);
+      client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.run_help_for_help);
       return;
     }
   };
@@ -187,9 +187,9 @@ client.on('message', message => {
       if (uid == -1) {
         Server1.admins.push(msg[2]);
         fs.writeFileSync('./s1.json', JSON.stringify(Server1, null, 4));
-        client.channels.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_added_to_server+msg[2]+lang.contoller_added_to_server2+msg[1]+lang.contoller_added_to_server3);
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_added_to_server+msg[2]+lang.contoller_added_to_server2+msg[1]+lang.contoller_added_to_server3);
       } else {
-        client.channels.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_already_added+msg[2]+lang.contoller_already_added2+msg[1]+lang.contoller_already_added3);
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_already_added+msg[2]+lang.contoller_already_added2+msg[1]+lang.contoller_already_added3);
       }
       break;
     case Server2.name:
@@ -197,13 +197,13 @@ client.on('message', message => {
       if (uid == -1) {
         Server2.admins.push(msg[2]);
         fs.writeFileSync('./s2.json', JSON.stringify(Server2, null, 4));
-        client.channels.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_added_to_server+msg[2]+lang.contoller_added_to_server2+msg[1]+lang.contoller_added_to_server3);
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_added_to_server+msg[2]+lang.contoller_added_to_server2+msg[1]+lang.contoller_added_to_server3);
       } else {
-        client.channels.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_already_added+msg[2]+lang.contoller_already_added2+msg[1]+lang.contoller_already_added3);
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_already_added+msg[2]+lang.contoller_already_added2+msg[1]+lang.contoller_already_added3);
       }
       break;
     default:
-      client.channels.get(cfg.channels_id.COMMAND_LINE).send(lang.run_help_for_help);
+      client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.run_help_for_help);
       return;
     }
   };
@@ -216,9 +216,9 @@ client.on('message', message => {
       if (uid != -1) {
         Server1.admins.splice(Server1.admins.indexOf(msg[2]), 1);
         fs.writeFileSync('./s1.json', JSON.stringify(Server1, null, 4));
-        client.channels.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_removed+msg[2]+lang.contoller_removed2+msg[1]+lang.contoller_removed3);
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_removed+msg[2]+lang.contoller_removed2+msg[1]+lang.contoller_removed3);
       } else {
-        client.channels.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_to_remove_not_found+msg[2]+lang.contoller_to_remove_not_found2+msg[1]+lang.contoller_to_remove_not_found3);
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_to_remove_not_found+msg[2]+lang.contoller_to_remove_not_found2+msg[1]+lang.contoller_to_remove_not_found3);
       };
       break;
     case Server2.name:
@@ -226,13 +226,13 @@ client.on('message', message => {
       if (uid != -1) {
         Server2.admins.splice(Server2.admins.indexOf(msg[2]), 1);
         fs.writeFileSync('./s2.json', JSON.stringify(Server2, null, 4));
-        client.channels.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_removed+msg[2]+lang.contoller_removed2+msg[1]+lang.contoller_removed3);
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_removed+msg[2]+lang.contoller_removed2+msg[1]+lang.contoller_removed3);
       } else {
-        client.channels.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_to_remove_not_found+msg[2]+lang.contoller_to_remove_not_found2+msg[1]+lang.contoller_to_remove_not_found3);
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_to_remove_not_found+msg[2]+lang.contoller_to_remove_not_found2+msg[1]+lang.contoller_to_remove_not_found3);
       }
       break;
     default:
-      client.channels.get(cfg.channels_id.COMMAND_LINE).send(lang.run_help_for_help);
+      client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.run_help_for_help);
       return;
     }
   };
@@ -268,7 +268,7 @@ async function issue_command(uid, cmd, server) {
       port   = Server2.port;
       break;
     default:
-      client.channels.get(cfg.channels_id.COMMAND_LINE).send(lang.run_help_for_help);
+      client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.run_help_for_help);
       return;
   };
   console.log(`${stat_msg.load} Trying to load OS shell servers control paths.`);
@@ -295,46 +295,46 @@ async function issue_command(uid, cmd, server) {
     if (devs.includes(uid)) {
       switch (cmd) {
         case cfg.commands.build_control.deploy:
-          client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to execute deploy build of server.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to execute deploy build of server.`);
           shell.exec(os_cmd_paths.deploy, { silent: true });
-          client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Deploy command executed.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Deploy command executed.`);
           break;
         case cfg.commands.build_control.compile:
-          client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to execute compile build of server.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to execute compile build of server.`);
           shell.exec(os_cmd_paths.compile, { silent: true });
-          client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Compile command executed. Compiling in progress.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Compile command executed. Compiling in progress.`);
           break;
         case cfg.commands.build_control.update_compile:
-          client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to execute bungle "auto+update+compile".`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to execute bungle "auto+update+compile".`);
           shell.exec(os_cmd_paths.update_compile, { silent: true });
-          client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Started Auto-update-compile.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Started Auto-update-compile.`);
           break;
         case cfg.commands.build_control.update:
-          client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to execute update.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to execute update.`);
           shell.exec(os_cmd_paths.update, { silent: true });
-          client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Update command executed.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Update command executed.`);
           break;
         case cfg.commands.build_control.send_compile_log:
-          client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to send compile log.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to send compile log.`);
           var log = shell.exec(os_cmd_paths.send_compile_log, { silent: true });
-          client.channels.get(cfg.channels_id.COMMAND_LINE).send(`\`\`\`${log}\`\`\``);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`\`\`\`${log}\`\`\``);
           break;
         case cfg.commands.build_control.send_update_log:
-          client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to send update log.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to send update log.`);
           var log = shell.exec(os_cmd_paths.send_update_log, { silent: true });
-          client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${log}`, { split: true });
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${log}`, { split: true });
           break;
         case cfg.commands.build_control.dlog:
-          client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to send dd log via "cat".`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to send dd log via "cat".`);
           var log = shell.exec(os_cmd_paths.dlog, { silent: true });
-          client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${log}`, { split: true });
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${log}`, { split: true });
           break;
         case cfg.commands.build_control.ddlog:
-          client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to send dd log directly.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to send dd log directly.`);
           if (fs.existsSync(os_cmd_paths.ddlog)) {
-            client.channels.get(cfg.channels_id.COMMAND_LINE).send({ files: [os_cmd_paths.ddlog] });
+            client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send({ files: [os_cmd_paths.ddlog] });
           } else {
-            client.channels.get(cfg.channels_id.COMMAND_LINE).send(`It seems that there is no required file, <@${mts.author.id}>.`);
+            client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`It seems that there is no required file, <@${mts.author.id}>.`);
           };
           break;
       };
@@ -342,26 +342,26 @@ async function issue_command(uid, cmd, server) {
     switch (cmd) {
       case cfg.commands.work_control.restart:
       case cfg.commands.work_control.stop:
-        if (cmd == cfg.commands.work_control.restart) client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Server emergency restart sequence engaged.`);
-        client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to stop server.`);
+        if (cmd == cfg.commands.work_control.restart) client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Server emergency restart sequence engaged.`);
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to stop server.`);
         shell.exec(os_cmd_paths.stop, { silent: true });
-        client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Stop command executed. Stopped.`); // Killed
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Stop command executed. Stopped.`); // Killed
         if (cmd == cfg.commands.work_control.restart) {
-          client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to start server.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to start server.`);
           shell.exec(os_cmd_paths.start2, { silent: true });
-          client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Start command executed. Starting.`);
-          client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Server emergency restart sequence finished.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Start command executed. Starting.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Server emergency restart sequence finished.`);
         }
         break;
       case cfg.commands.work_control.start:
-        client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to check server's pulse.`);
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to check server's pulse.`);
         if (shell.exec(os_cmd_paths.start1, { silent: true }) == "1\n") {
-          client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Server is still online, starting not required.`); // Not dead yet.
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Server is still online, starting not required.`); // Not dead yet.
           break;
         };
-        client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to start server.`);
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to start server.`);
         shell.exec(os_cmd_paths.start2, { silent: true });
-        client.channels.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Start command executed. Starting.`);
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Start command executed. Starting.`);
         break;
     };
   };
@@ -398,7 +398,7 @@ async function print_help() {
     .addField('• Regular user privileges:', h3)
     .setTimestamp()
     .setFooter('', 'https://i.imgur.com/wSTFkRM.png');
-  client.channels.get(cfg.channels_id.COMMAND_LINE).send(commandOutputEmbed);
+  client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(commandOutputEmbed);
 };
 
 console.log(`[${stat_msg.boot}] Trying to login and start servicing...`);
@@ -422,7 +422,7 @@ process.on('SIGTERM', function() { console.log("Caught interrupt signal (operati
 
 process.on('exit', code => {
   console.log (`Exiting. Exit code: ${code}`);
-  // client.channels.get(cfg.channels_id.COMMAND_LINE).send("Script stopping die external command.");
+  // client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send("Script stopping die external command.");
   // client.user.setStatus("offline");
   process.exit(1);
 });
