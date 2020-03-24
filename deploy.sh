@@ -1,7 +1,7 @@
 #!/bin/bash
 # edit this shit as your server need
 
-cd /home/tgstation/repos/repo_white/
+/home/ubuntu/repos/server_sigma #cd /home/tgstation/repos/repo_white/
 
 mkdir -p \
     $1/_maps \
