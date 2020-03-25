@@ -372,7 +372,7 @@ async function issue_command(uid, cmd, server) {
     switch (cmd) {
       case cfg.commands.work_control.restart:
       case cfg.commands.work_control.stop:
-        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Game server ${cmd == cfg.commands.work_control.restart ? "restart" : "stopping"} sequence engaged.`);
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: **Game server ${cmd == cfg.commands.work_control.restart ? "restart" : "stopping"} sequence engaged**.`);
 
         client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to check game server's pulse.`);
         if (shell.exec(os_cmd_paths.start1, { silent: true }) == "0\n") {
@@ -394,20 +394,21 @@ async function issue_command(uid, cmd, server) {
           }
 
         };
-        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Game server ${cmd == cfg.commands.work_control.restart ? "restart" : "stopping"} sequence finished.`);
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: **Game server ${cmd == cfg.commands.work_control.restart ? "restart" : "stopping"} sequence finished**.`);
         break;
+
       case cfg.commands.work_control.start:
-        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Game server start sequence engaged.`)
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: **Game server start sequence engaged**.`)
         client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to check game server's pulse.`);
         if (shell.exec(os_cmd_paths.start1, { silent: true }) == "1\n") {
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Game server is already online, starting not required.`); // Not dead yet.
-          break;
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Game server is already online, starting not required.`) // Not dead yet.
+        } else {
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to start game server.`);
+          shell.exec(os_cmd_paths.start2, { silent: true });
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Start command executed. Game server started.`);
         };
-        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to start game server.`);
-        shell.exec(os_cmd_paths.start2, { silent: true });
-        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Start command executed. Game server started.`);
-        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Game server start sequence finished.`)
-        break;
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: **Game server start sequence finished**.`);
+        break
     };
   };
 };
