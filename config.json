@@ -20,8 +20,8 @@
     "PROD":    "/home/ubuntu/production/",
     "LOC_ENG": "./localization/lang.en.js",
     "LOC_RUS": "./localization/lang.ru.js",
-    "S1_JSON": "./s1.json",
-    "S2_JSON": "./s2.json",
+    "S1_JSON": "./servers/s1.json",
+    "S2_JSON": "./servers/s2.json"
   },
 
   "servers": {
