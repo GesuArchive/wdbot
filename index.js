@@ -90,11 +90,7 @@ client.on('ready', () => {
   var client_is_ready = true;
   console.log(`[${stat_msg.info}] Logged in as «${client.user.tag}».`);
   console.log(`[${stat_msg.boot}] ${lang.greeting_log}${mclr.Rst}`)
-  commandOutputEmbed = new Discord.RichEmbed()
-    .setColor('#008000') // green
-    .setAuthor(lang.greeting_print)
-    .setTimestamp()
-  client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(commandOutputEmbed);
+  client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.greeting_print);
   client.user.setActivity(lang.bot_status_playing);
 });
 
@@ -141,10 +137,7 @@ client.on('message', message => {
     return;
   } else {
     console.log(`[${stat_msg.command}] (${message.author.username}) {${message.channel.name}}: ${message.content}`);
-    commandOutputEmbed = new Discord.RichEmbed()
-    .setColor('#FFFF00') // yellow
-    .setAuthor('Сommand recognized, executing. If nothing printed, that can be error.')
-  client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(commandOutputEmbed);
+    client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`\`\`\`Сommand recognized, executing. If nothing printed, that can be error.\`\`\``);
   };
 
   if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.general.help)) {
@@ -371,34 +364,33 @@ async function print_help() {
   if (cfg.script_debug) console.log(`${stat_msg.info} Function \"print_help\" called.`);
   //console.log(arguments.callee.name);
 
-  var h =  `\`${cfg.general.cmd_prefix}${cfg.commands.general.adduser} SERVER_NAME UID\` — adds user to server\n`;
-  h +=   `\`${cfg.general.cmd_prefix}${cfg.commands.general.remuser} SERVER_NAME UID\` — removes user from server\n`;
-  h +=   `\`${cfg.general.cmd_prefix}${cfg.commands.general.whoisadmin} SERVER_NAME\` — list of users in server\n`;
-  h +=   `\`${cfg.general.cmd_prefix}${cfg.commands.nodejs.version}\` — displays the Node.js version string.\n`;
-  h +=   `\`${cfg.general.cmd_prefix}${cfg.commands.nodejs.uptime}\` — displays uptime in seconds of the current Node.js process running.\n`;
+  var h1 = `\`${cfg.general.cmd_prefix}${cfg.commands.general.adduser} SERVER_NAME UID\` — adds user to server\n`;
+  h1 +=    `\`${cfg.general.cmd_prefix}${cfg.commands.general.remuser} SERVER_NAME UID\` — removes user from server\n`;
+  h1 +=    `\`${cfg.general.cmd_prefix}${cfg.commands.general.whoisadmin} SERVER_NAME\` — list of users in server\n`;
+  h1 +=    `\`${cfg.general.cmd_prefix}${cfg.commands.nodejs.version}\` — displays the Node.js version string.\n`;
+  h1 +=    `\`${cfg.general.cmd_prefix}${cfg.commands.nodejs.uptime}\` — displays uptime in seconds of the current Node.js process running.\n`;
 
   var h2 = `\`${cfg.general.cmd_prefix}${cfg.commands.general.help}\` — displays this information\n`;
-  h2 +=   `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.compile}\` — runs compilation in the repo dir\n`;
-  h2 +=   `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.deploy}\` — moves compiled files and defined in «deploy.sh»\n`;
-  h2 +=   `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.update}\` — updates local repo from master\n`;
-  h2 +=   `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.send_compile_log}\` — sends compile log file\n`;
-  h2 +=   `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.send_update_log}\` — sends update log file\n`;
-  h2 +=   `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.dlog}\` — displays DreamDaemon log\n`;
-  h2 +=   `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.ddlog}\` — retrieve dd.log file from the server\n`;
+  h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.compile}\` — runs compilation in the repo dir\n`;
+  h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.deploy}\` — moves compiled files and defined in «deploy.sh»\n`;
+  h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.update}\` — updates local repo from master\n`;
+  h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.send_compile_log}\` — sends compile log file\n`;
+  h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.send_update_log}\` — sends update log file\n`;
+  h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.dlog}\` — displays DreamDaemon log\n`;
+  h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.ddlog}\` — retrieve dd.log file from the server\n`;
 
   var h3 = `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.work_control.start}\` — start server\n`;
-  h3 +=   `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.work_control.stop}\` — stop server\n`;
-  h3 +=   `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.work_control.restart}\` — restart server\n`;
- // inside a command, event listener, etc.
-   commandOutputEmbed = new Discord.RichEmbed()
-    .setColor('#0099ff')
-    .setAuthor('Help contents:', 'https://i.imgur.com/wSTFkRM.png')
-    .addField('• Host user privileges:', h)
-    .addField('• Developer user privileges:', h2)
-    .addField('• Regular user privileges:', h3)
-    .setTimestamp()
-    .setFooter('', 'https://i.imgur.com/wSTFkRM.png');
-  client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(commandOutputEmbed);
+  h3 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.work_control.stop}\` — stop server\n`;
+  h3 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.work_control.restart}\` — restart server\n`;
+
+  var h = `Help contents:\n`;
+  h +=    `• Host user privileges:\n`;
+  h +=    h1;
+  h +=    `• Developer user privileges:\n`;
+  h +=    h2;
+  h +=    `• Regular user privileges:\n`;
+  h +=    h3;
+  client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(h);
 };
 
 console.log(`[${stat_msg.boot}] Trying to login and start servicing...`);
