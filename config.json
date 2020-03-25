@@ -48,14 +48,16 @@
         "uptime":  "uptime"
     },
     "build_control": {
-      "deploy":           "deploy",
-      "compile":          "compile",
-      "update_compile":   "uc",
-      "update":           "update",
-      "send_compile_log": "clog",
-      "send_update_log":  "ulog",
-      "dlog":             "dlog",
-      "ddlog":            "ddlog"
+      "deploy":                 "deploy",
+      "compile":                "compile",
+      "update_compile":         "uc",
+      "update":                 "update",
+      "log_compile_show":       "clog1",
+      "log_compile_upload":     "clog2",
+      "log_update_show":        "ulog1",
+      "log_update_upload":      "ulog2",
+      "log_dreamdaemon_show":   "ddlog1",
+      "log_dreamdaemon_upload": "ddlog2"
     },
     "work_control": {
     "restart": "restart",

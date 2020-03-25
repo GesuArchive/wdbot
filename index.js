@@ -152,7 +152,7 @@ client.on('message', message => {
   };
 
   if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.general.servers_list)) {
-    var slist_out = `Avaliable servers (names only):\n`;
+    var slist_out = `Avaliable game servers (names only):\n`;
     slist_out +=    `** • Server №1:** \`${Server1.name}\` — ${Server1.avaliable ? "avaliable" : "not avaliable"}\n`;
     slist_out +=    `** • Server №2:** \`${Server2.name}\` — ${Server2.avaliable ? "avaliable" : "not avaliable"}\n`;
     client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(slist_out);
@@ -277,45 +277,49 @@ async function issue_command(uid, cmd, server) {
   };
 
   if (savaliable) {
-    console.log(`[${stat_msg.boot}] ${sname}: Someone was tried to operate with available server, continuing.`);
-    client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Server is available by config, continuing.`);
+    console.log(`[${stat_msg.boot}] ${sname}: Someone was tried to operate with available game server, continuing.`);
+    client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Game server is available by config, continuing.`);
   } else {
-    console.log(`[${stat_msg.failed}] ${sname}: Someone was tried to operate with unavailable server, aboarting.`);
-    client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Server is unavailable by config, aboarting.`);
+    console.log(`[${stat_msg.failed}] ${sname}: Someone was tried to operate with unavailable game server, aboarting.`);
+    client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Game server is unavailable by config, aboarting.`);
     return;
   };
 
-  console.log(`[${stat_msg.load}] ${sname}: Trying to load OS shell servers control paths.`);
+  console.log(`[${stat_msg.load}] ${sname}: Trying to load OS shell game servers control paths.`);
   os_cmds = {
     server_name:      `${cfg.directories.REPOS}server_${sname}`,
     server_repo:      `${cfg.directories.REPOS}repo_${sname}`,
     server_prod_name: `${cfg.directories.REPOS}server_${sname}`,
   };
   os_cmd_paths = {
-    deploy:           `sh ${os_cmds.server_repo}/tools/deploy.sh ${cfg.directories.REPOS}server_${sname}`,
-    compile:          `cd ${os_cmds.server_repo}/ && : > ../${sname}_compile.log && screen -dmS ${sname}compile -L -Logfile ../${sname}_compile.log DreamMaker tgstation.dme`,
-    update_compile:   `cd ${os_cmds.server_repo}/ && : > ../${sname}_update.log && : > ../${sname}_compile.log && git pull > ../${sname}_update.log && screen -dmS ${sname}compile -L -Logfile ../${sname}_compile.log DreamMaker tgstation.dme`,
-    update:           `cd ${os_cmds.server_repo}/ && : > ../${sname}_update.log && git pull > ../${sname}_update.log &`,
-    send_compile_log: `cat ${cfg.directories.REPOS}${sname}_compile.log`,
-    send_update_log:  `cat ${cfg.directories.REPOS}${sname}_update.log`,
-    dlog:             `cat ${cfg.directories.PROD}${sname}_dd.log`,
-    ddlog:            `${cfg.directories.PROD}${sname}_dd.log`,
+    deploy:           `sh ${os_cmds.server_name}/tools/deploy.sh ${cfg.directories.REPOS}server_${sname}`,
+    compile:          `cd ${os_cmds.server_name}/ && : > ../${sname}_compile.log && screen -dmS ${sname}compile -L -Logfile ../${sname}_compile.log DreamMaker tgstation.dme`,
+    update_compile:   `cd ${os_cmds.server_name}/ && : > ../${sname}_update.log && : > ../${sname}_compile.log && git pull > ../${sname}_update.log && screen -dmS ${sname}compile -L -Logfile ../${sname}_compile.log DreamMaker tgstation.dme`,
+    update:           `cd ${os_cmds.server_name}/ && : > ../${sname}_update.log && git pull > ../${sname}_update.log &`,
+
+    log_update_show:        `cat ${cfg.directories.REPOS}${sname}_update.log`,
+    log_update_upload:          `${cfg.directories.REPOS}${sname}_update.log`,
+    log_compile_show:       `cat ${cfg.directories.REPOS}${sname}_compile.log`,
+    log_compile_upload:         `${cfg.directories.REPOS}${sname}_compile.log`,
+    log_dreamdaemon_show:   `cat ${cfg.directories.REPOS}${sname}_dd.log`,
+    log_dreamdaemon_upload:     `${cfg.directories.REPOS}${sname}_dd.log`,
+
     start1:           `[ "$(screen -ls | grep ${sname}server)"  ] && echo 1 || echo 0`,
     start2:           `export LD_LIBRARY_PATH=${os_cmds.server_prod_name} && cd ${os_cmds.server_prod_name}/ && : > ../${sname}_dd.log && screen -dmS ${sname}server -L -Logfile ../${sname}_dd.log DreamDaemon tgstation.dmb -port ${port} -trusted -public -threads on -params config-directory=cfg`,
     stop:             `screen -X -S ${sname}server quit`
   };
-  console.log(`[${stat_msg.load}] ${sname}: OS shell servers control paths loaded.`);
+  console.log(`[${stat_msg.load}] ${sname}: OS shell game servers control paths loaded.`);
 
   if (admins.includes(uid)) {
     if (devs.includes(uid)) {
       switch (cmd) {
         case cfg.commands.build_control.deploy:
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to execute deploy build of server.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to execute deploy build of game server.`);
           shell.exec(os_cmd_paths.deploy, { silent: true });
           client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Deploy command executed.`);
           break;
         case cfg.commands.build_control.compile:
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to execute compile build of server.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to execute compile build of game server.`);
           shell.exec(os_cmd_paths.compile, { silent: true });
           client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Compile command executed. Compiling in progress.`);
           break;
@@ -329,27 +333,38 @@ async function issue_command(uid, cmd, server) {
           shell.exec(os_cmd_paths.update, { silent: true });
           client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Update command executed.`);
           break;
-        case cfg.commands.build_control.send_compile_log:
+
+          case cfg.commands.build_control.log_update_show:
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to send update log.`);
+          var log = shell.exec(os_cmd_paths.log_update_show, { silent: true });
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${log}`, { split: true });
+          break;
+          case cfg.commands.build_control.log_update_upload:
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to send update log.`);
+          var log = shell.exec(os_cmd_paths.log_update_upload, { silent: true });
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${log}`, { split: true });
+          break;
+        case cfg.commands.build_control.log_compile_show:
           client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to send compile log.`);
-          var log = shell.exec(os_cmd_paths.send_compile_log, { silent: true });
+          var log = shell.exec(os_cmd_paths.log_compile_show, { silent: true });
           client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`\`\`\`${log}\`\`\``);
           break;
-        case cfg.commands.build_control.send_update_log:
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to send update log.`);
-          var log = shell.exec(os_cmd_paths.send_update_log, { silent: true });
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${log}`, { split: true });
+        case cfg.commands.build_control.log_compile_upload:
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to send compile log.`);
+          var log = shell.exec(os_cmd_paths.log_compile_upload, { silent: true });
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`\`\`\`${log}\`\`\``);
           break;
-        case cfg.commands.build_control.dlog:
+        case cfg.commands.build_control.log_dreamdaemon_show:
           client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to send dd log via "cat".`);
-          var log = shell.exec(os_cmd_paths.dlog, { silent: true });
+          var log = shell.exec(os_cmd_paths.log_dreamdaemon_show, { silent: true });
           client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${log}`, { split: true });
           break;
-        case cfg.commands.build_control.ddlog:
+        case cfg.commands.build_control.log_dreamdaemon_upload:
           client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to send dd log directly.`);
-          if (fs.existsSync(os_cmd_paths.ddlog)) {
-            client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send({ files: [os_cmd_paths.ddlog] });
+          if (fs.existsSync(os_cmd_paths.log_dreamdaemon_upload)) {
+            client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send({ files: [os_cmd_paths.log_dreamdaemon_upload] });
           } else {
-            client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`It seems that there is no required file, <@${mts.author.id}>.`);
+            client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`It seems that there is no required file.`);
           };
           break;
       };
@@ -357,26 +372,44 @@ async function issue_command(uid, cmd, server) {
     switch (cmd) {
       case cfg.commands.work_control.restart:
       case cfg.commands.work_control.stop:
-        if (cmd == cfg.commands.work_control.restart) client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Server emergency restart sequence engaged.`);
-        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to stop server.`);
-        shell.exec(os_cmd_paths.stop, { silent: true });
-        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Stop command executed. Stopped.`); // Killed
         if (cmd == cfg.commands.work_control.restart) {
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to start server.`);
-          shell.exec(os_cmd_paths.start2, { silent: true });
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Start command executed. Starting.`);
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Server emergency restart sequence finished.`);
-        }
-        break;
-      case cfg.commands.work_control.start:
-        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to check server's pulse.`);
-        if (shell.exec(os_cmd_paths.start1, { silent: true }) == "1\n") {
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Server is still online, starting not required.`); // Not dead yet.
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Game server restart sequence engaged.`)
+        } else {
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Game server stopping sequence engaged.`)
+        };
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to check game server's pulse.`);
+        if (shell.exec(os_cmd_paths.start1, { silent: true }) == "0\n") {
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Game server is already offline, stopping not required, continuing.`); // Not dead yet.
           break;
         };
-        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to start server.`);
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to stop game server.`);
+        shell.exec(os_cmd_paths.stop, { silent: true });
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Stop command executed. Game server stopped, continuing.`); // Killed
+        if (cmd == cfg.commands.work_control.restart) {
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to check game server's pulse.`);
+          if (shell.exec(os_cmd_paths.start1, { silent: true }) == "1\n") {
+            client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Game server is already online, starting not required. How does this is possiable?`); // Not dead yet.
+            break;
+          };
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to start game server.`);
+          shell.exec(os_cmd_paths.start2, { silent: true });
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Start command executed. Game server started.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Game server restart sequence finished.`);
+        } else {
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Game server stopping sequence finished.`)
+        };
+        break;
+      case cfg.commands.work_control.start:
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Game server start sequence engaged.`)
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to check game server's pulse.`);
+        if (shell.exec(os_cmd_paths.start1, { silent: true }) == "1\n") {
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Game server is already online, starting not required.`); // Not dead yet.
+          break;
+        };
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to start game server.`);
         shell.exec(os_cmd_paths.start2, { silent: true });
-        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Start command executed. Starting.`);
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Start command executed. Game server started.`);
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Game server start sequence finished.`)
         break;
     };
   };
@@ -386,9 +419,9 @@ async function print_help() {
   if (cfg.script_debug) console.log(`${stat_msg.info} Function \"print_help\" called.`);
   //console.log(arguments.callee.name);
 
-  var h1 = `\`${cfg.general.cmd_prefix}${cfg.commands.general.adduser} SERVER_NAME UID\` — adds user to server\n`;
-  h1 +=    `\`${cfg.general.cmd_prefix}${cfg.commands.general.remuser} SERVER_NAME UID\` — removes user from server\n`;
-  h1 +=    `\`${cfg.general.cmd_prefix}${cfg.commands.general.whoisadmin} SERVER_NAME\` — list of users in server\n`;
+  var h1 = `\`${cfg.general.cmd_prefix}${cfg.commands.general.adduser} SERVER_NAME UID\` — adds user to game server contol\n`;
+  h1 +=    `\`${cfg.general.cmd_prefix}${cfg.commands.general.remuser} SERVER_NAME UID\` — removes user from game server control\n`;
+  h1 +=    `\`${cfg.general.cmd_prefix}${cfg.commands.general.whoisadmin} SERVER_NAME\` — list of users in game server control\n`;
   h1 +=    `\`${cfg.general.cmd_prefix}${cfg.commands.nodejs.version}\` — displays the Node.js version string.\n`;
   h1 +=    `\`${cfg.general.cmd_prefix}${cfg.commands.nodejs.uptime}\` — displays uptime in seconds of the current Node.js process running.\n`;
 
@@ -396,15 +429,17 @@ async function print_help() {
   h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.compile}\` — runs compilation in the repo dir\n`;
   h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.deploy}\` — moves compiled files and defined in «deploy.sh»\n`;
   h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.update}\` — updates local repo from master\n`;
-  h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.send_compile_log}\` — sends compile log file\n`;
-  h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.send_update_log}\` — sends update log file\n`;
-  h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.dlog}\` — displays DreamDaemon log\n`;
-  h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.ddlog}\` — retrieve dd.log file from the server\n`;
+  h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.log_update_show}\` — displays update log (via "cat")\n`;
+  h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.log_update_upload}\` — upload update log from host to here\n`;
+  h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.log_compile_show}\` — displays compile log (via "cat")\n`;
+  h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.log_compile_upload}\` — upload compile log from host to here\n`;
+  h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.log_dreamdaemon_show}\` — displays DreamDaemon log (via "cat")\n`;
+  h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.log_dreamdaemon_upload}\` — upload SERVER_NAME_dd.log from host to here\n`;
 
-  var h3 = `\`${cfg.general.cmd_prefix}${cfg.commands.general.servers_list}\` — list avaliable servers name\n`;
-  h3 += `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.work_control.start}\` — start server\n`;
-  h3 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.work_control.stop}\` — stop server\n`;
-  h3 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.work_control.restart}\` — restart server\n`;
+  var h3 = `\`${cfg.general.cmd_prefix}${cfg.commands.general.servers_list}\` — list avaliable game servers name\n`;
+  h3 += `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.work_control.start}\` — start game server\n`;
+  h3 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.work_control.stop}\` — stop game server\n`;
+  h3 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.work_control.restart}\` — restart game server\n`;
 
   var h = `Help contents:\n`;
   h +=    `** • Host user privileges:**\n`;
