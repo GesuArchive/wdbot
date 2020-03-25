@@ -278,10 +278,10 @@ async function issue_command(uid, cmd, server) {
 
   if (savaliable) {
     console.log(`[${stat_msg.boot}] ${sname}: Someone was tried to operate with available game server, continuing.`);
-    client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Game server is available by config, continuing.`);
+    client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Game server is available by config, continuing.`);
   } else {
     console.log(`[${stat_msg.failed}] ${sname}: Someone was tried to operate with unavailable game server, aboarting.`);
-    client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Game server is unavailable by config, aboarting.`);
+    client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Game server is unavailable by config, aboarting.`);
     return;
   };
 
@@ -314,53 +314,53 @@ async function issue_command(uid, cmd, server) {
     if (devs.includes(uid)) {
       switch (cmd) {
         case cfg.commands.build_control.deploy:
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to execute deploy build of game server.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to execute deploy build of game server.`);
           shell.exec(os_cmd_paths.deploy, { silent: true });
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Deploy command executed.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Deploy command executed.`);
           break;
         case cfg.commands.build_control.compile:
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to execute compile build of game server.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to execute compile build of game server.`);
           shell.exec(os_cmd_paths.compile, { silent: true });
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Compile command executed. Compiling in progress.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Compile command executed. Compiling in progress.`);
           break;
         case cfg.commands.build_control.update_compile:
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to execute bungle "auto+update+compile".`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to execute bungle "auto+update+compile".`);
           shell.exec(os_cmd_paths.update_compile, { silent: true });
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Started Auto-update-compile.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Started Auto-update-compile.`);
           break;
         case cfg.commands.build_control.update:
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to execute update.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to execute update.`);
           shell.exec(os_cmd_paths.update, { silent: true });
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Update command executed.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Update command executed.`);
           break;
 
           case cfg.commands.build_control.log_update_show:
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to send update log.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to send update log.`);
           var log = shell.exec(os_cmd_paths.log_update_show, { silent: true });
           client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${log}`, { split: true });
           break;
           case cfg.commands.build_control.log_update_upload:
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to send update log.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to send update log.`);
           var log = shell.exec(os_cmd_paths.log_update_upload, { silent: true });
           client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${log}`, { split: true });
           break;
         case cfg.commands.build_control.log_compile_show:
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to send compile log.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to send compile log.`);
           var log = shell.exec(os_cmd_paths.log_compile_show, { silent: true });
           client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`\`\`\`${log}\`\`\``);
           break;
         case cfg.commands.build_control.log_compile_upload:
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to send compile log.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to send compile log.`);
           var log = shell.exec(os_cmd_paths.log_compile_upload, { silent: true });
           client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`\`\`\`${log}\`\`\``);
           break;
         case cfg.commands.build_control.log_dreamdaemon_show:
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to send dd log via "cat".`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to send dd log via "cat".`);
           var log = shell.exec(os_cmd_paths.log_dreamdaemon_show, { silent: true });
           client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${log}`, { split: true });
           break;
         case cfg.commands.build_control.log_dreamdaemon_upload:
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to send dd log directly.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to send dd log directly.`);
           if (fs.existsSync(os_cmd_paths.log_dreamdaemon_upload)) {
             client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send({ files: [os_cmd_paths.log_dreamdaemon_upload] });
           } else {
@@ -372,44 +372,41 @@ async function issue_command(uid, cmd, server) {
     switch (cmd) {
       case cfg.commands.work_control.restart:
       case cfg.commands.work_control.stop:
-        if (cmd == cfg.commands.work_control.restart) {
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Game server restart sequence engaged.`)
-        } else {
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Game server stopping sequence engaged.`)
-        };
-        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to check game server's pulse.`);
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Game server ${cmd == cfg.commands.work_control.restart ? "restart" : "stopping"} sequence engaged.`);
+
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to check game server's pulse.`);
         if (shell.exec(os_cmd_paths.start1, { silent: true }) == "0\n") {
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Game server is already offline, stopping not required, continuing.`); // Not dead yet.
-          break;
-        };
-        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to stop game server.`);
-        shell.exec(os_cmd_paths.stop, { silent: true });
-        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Stop command executed. Game server stopped, continuing.`); // Killed
-        if (cmd == cfg.commands.work_control.restart) {
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to check game server's pulse.`);
-          if (shell.exec(os_cmd_paths.start1, { silent: true }) == "1\n") {
-            client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Game server is already online, starting not required. How does this is possiable?`); // Not dead yet.
-            break;
-          };
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to start game server.`);
-          shell.exec(os_cmd_paths.start2, { silent: true });
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Start command executed. Game server started.`);
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Game server restart sequence finished.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Game server is already offline, stopping not required.`); // Not dead yet.
         } else {
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Game server stopping sequence finished.`)
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to stop game server.`);
+          shell.exec(os_cmd_paths.stop, { silent: true });
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Stop command executed. Game server stopped.`) // Killed
         };
+
+        if (cmd == cfg.commands.work_control.restart) {
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to check game server's pulse.`);
+          if (shell.exec(os_cmd_paths.start1, { silent: true }) == "1\n") {
+            client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Game server is already online, starting not required.`) // Not dead yet.
+          } else {
+            client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to start game server.`);
+            shell.exec(os_cmd_paths.start2, { silent: true });
+            client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Start command executed. Game server started.`)
+          }
+
+        };
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Game server ${cmd == cfg.commands.work_control.restart ? "restart" : "stopping"} sequence finished.`);
         break;
       case cfg.commands.work_control.start:
-        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Game server start sequence engaged.`)
-        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to check game server's pulse.`);
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Game server start sequence engaged.`)
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to check game server's pulse.`);
         if (shell.exec(os_cmd_paths.start1, { silent: true }) == "1\n") {
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Game server is already online, starting not required.`); // Not dead yet.
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Game server is already online, starting not required.`); // Not dead yet.
           break;
         };
-        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Trying to start game server.`);
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to start game server.`);
         shell.exec(os_cmd_paths.start2, { silent: true });
-        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Start command executed. Game server started.`);
-        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Game server start sequence finished.`)
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Start command executed. Game server started.`);
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Game server start sequence finished.`)
         break;
     };
   };
