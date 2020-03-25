@@ -384,11 +384,11 @@ async function print_help() {
   h3 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.work_control.restart}\` — restart server\n`;
 
   var h = `Help contents:\n`;
-  h +=    `• Host user privileges:\n`;
+  h +=    `** • Host user privileges:**\n`;
   h +=    h1;
-  h +=    `• Developer user privileges:\n`;
+  h +=    `** • Developer user privileges:**\n`;
   h +=    h2;
-  h +=    `• Regular user privileges:\n`;
+  h +=    `** • Regular user privileges:**\n`;
   h +=    h3;
   client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(h);
 };

@@ -1,6 +1,6 @@
 {
-    "name": "white",
-    "port": "2019",
+    "name": "server1_name",
+    "port": "2020",
     "admins": [
         "184761278634524673"
     ],
