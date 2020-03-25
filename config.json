@@ -37,10 +37,15 @@
 
   "commands": {
     "general": {
-      "help":       "shelp",
-      "whoisadmin": "luser",
-      "adduser":    "adduser",
-      "remuser":    "remuser"
+      "help":         "shelp",
+      "whoisadmin":   "luser",
+      "adduser":      "adduser",
+      "remuser":      "remuser",
+      "servers_list": "server list"
+    },
+      "nodejs": {
+        "version": "version",
+        "uptime":  "uptime"
     },
     "build_control": {
       "deploy":           "deploy",

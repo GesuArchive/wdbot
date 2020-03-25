@@ -1,6 +1,6 @@
 
 //--------------------------------------------------------------------------//
-// Node.js bot for serve maintenancers, developers and hosts of BYOND SS13 servers
+// Node.js bot for maintenancers, developers and hosts of BYOND SS13 servers
 // Original version taken from «White Dream»
 // Original author: Valtos, modder of original: Gesugao-san
 // Use wisely and report bugs if you find any.
@@ -151,6 +151,14 @@ client.on('message', message => {
     return;
   };
 
+  if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.general.servers_list)) {
+    var slist_out = `Avaliable servers (names only):\n`;
+    slist_out +=    `** • Server №1:** \`${Server1.name}\` — ${Server1.avaliable ? "avaliable" : "not avaliable"}\n`;
+    slist_out +=    `** • Server №2:** \`${Server2.name}\` — ${Server2.avaliable ? "avaliable" : "not avaliable"}\n`;
+    client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(slist_out);
+    return;
+  };
+
   if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.nodejs.uptime)) {
     client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`Current Node.js process uptime: ${process.uptime()}`);
     return;
@@ -243,47 +251,61 @@ client.on('message', message => {
 });
 
 async function issue_command(uid, cmd, server) {
+  var savaliable;
   var sname;
   var admins;
   var devs;
   var port;
   switch(server) {
     case Server1.name:
-      sname  = Server1.name;
-      admins = Server1.admins;
-      devs   = Server1.devs;
-      port   = Server1.port;
+      savaliable = Server1.avaliable;
+      sname      = Server1.name;
+      admins     = Server1.admins;
+      devs       = Server1.devs;
+      port       = Server1.port;
       break;
     case Server2.name:
-      sname  = Server2.name;
-      admins = Server2.admins;
-      devs   = Server2.devs;
-      port   = Server2.port;
+      savaliable = Server2.avaliable;
+      sname      = Server2.name;
+      admins     = Server2.admins;
+      devs       = Server2.devs;
+      port       = Server2.port;
       break;
     default:
       client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.run_help_for_help);
       return;
   };
-  console.log(`${stat_msg.load} Trying to load OS shell servers control paths.`);
+
+  if (savaliable) {
+    console.log(`[${stat_msg.boot}] ${sname}: Someone was tried to operate with available server, continuing.`);
+    client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Server is available by config, continuing.`);
+  } else {
+    console.log(`[${stat_msg.failed}] ${sname}: Someone was tried to operate with unavailable server, aboarting.`);
+    client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${sname}: Server is unavailable by config, aboarting.`);
+    return;
+  };
+
+  console.log(`[${stat_msg.load}] ${sname}: Trying to load OS shell servers control paths.`);
   os_cmds = {
-    server_name:   `${cfg.directories.REPOS}server_${sname}`,
-    server_repo:   `${cfg.directories.REPOS}repo_${sname}`,
+    server_name:      `${cfg.directories.REPOS}server_${sname}`,
+    server_repo:      `${cfg.directories.REPOS}repo_${sname}`,
     server_prod_name: `${cfg.directories.REPOS}server_${sname}`,
   };
   os_cmd_paths = {
-    deploy:      `sh ${os_cmds.server_repo}/tools/deploy.sh ${cfg.directories.REPOS}server_${sname}`,
-    compile:     `cd ${os_cmds.server_repo}/ && : > ../${sname}_compile.log && screen -dmS ${sname}compile -L -Logfile ../${sname}_compile.log DreamMaker tgstation.dme`,
-    update_compile:  `cd ${os_cmds.server_repo}/ && : > ../${sname}_update.log && : > ../${sname}_compile.log && git pull > ../${sname}_update.log && screen -dmS ${sname}compile -L -Logfile ../${sname}_compile.log DreamMaker tgstation.dme`,
-    update:      `cd ${os_cmds.server_repo}/ && : > ../${sname}_update.log && git pull > ../${sname}_update.log &`,
+    deploy:           `sh ${os_cmds.server_repo}/tools/deploy.sh ${cfg.directories.REPOS}server_${sname}`,
+    compile:          `cd ${os_cmds.server_repo}/ && : > ../${sname}_compile.log && screen -dmS ${sname}compile -L -Logfile ../${sname}_compile.log DreamMaker tgstation.dme`,
+    update_compile:   `cd ${os_cmds.server_repo}/ && : > ../${sname}_update.log && : > ../${sname}_compile.log && git pull > ../${sname}_update.log && screen -dmS ${sname}compile -L -Logfile ../${sname}_compile.log DreamMaker tgstation.dme`,
+    update:           `cd ${os_cmds.server_repo}/ && : > ../${sname}_update.log && git pull > ../${sname}_update.log &`,
     send_compile_log: `cat ${cfg.directories.REPOS}${sname}_compile.log`,
-    send_update_log: `cat ${cfg.directories.REPOS}${sname}_update.log`,
-    dlog:       `cat ${cfg.directories.PROD}${sname}_dd.log`,
-    ddlog:      `${cfg.directories.PROD}${sname}_dd.log`,
-    start1:      `[ "$(screen -ls | grep ${sname}server)"  ] && echo 1 || echo 0`,
-    start2:      `export LD_LIBRARY_PATH=${os_cmds.server_prod_name} && cd ${os_cmds.server_prod_name}/ && : > ../${sname}_dd.log && screen -dmS ${sname}server -L -Logfile ../${sname}_dd.log DreamDaemon tgstation.dmb -port ${port} -trusted -public -threads on -params config-directory=cfg`,
-    stop:       `screen -X -S ${sname}server quit`
+    send_update_log:  `cat ${cfg.directories.REPOS}${sname}_update.log`,
+    dlog:             `cat ${cfg.directories.PROD}${sname}_dd.log`,
+    ddlog:            `${cfg.directories.PROD}${sname}_dd.log`,
+    start1:           `[ "$(screen -ls | grep ${sname}server)"  ] && echo 1 || echo 0`,
+    start2:           `export LD_LIBRARY_PATH=${os_cmds.server_prod_name} && cd ${os_cmds.server_prod_name}/ && : > ../${sname}_dd.log && screen -dmS ${sname}server -L -Logfile ../${sname}_dd.log DreamDaemon tgstation.dmb -port ${port} -trusted -public -threads on -params config-directory=cfg`,
+    stop:             `screen -X -S ${sname}server quit`
   };
-  console.log(`${stat_msg.load} OS shell servers control paths loaded.`);
+  console.log(`[${stat_msg.load}] ${sname}: OS shell servers control paths loaded.`);
+
   if (admins.includes(uid)) {
     if (devs.includes(uid)) {
       switch (cmd) {
@@ -379,7 +401,8 @@ async function print_help() {
   h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.dlog}\` — displays DreamDaemon log\n`;
   h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.ddlog}\` — retrieve dd.log file from the server\n`;
 
-  var h3 = `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.work_control.start}\` — start server\n`;
+  var h3 = `\`${cfg.general.cmd_prefix}${cfg.commands.general.servers_list}\` — list avaliable servers name\n`;
+  h3 += `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.work_control.start}\` — start server\n`;
   h3 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.work_control.stop}\` — stop server\n`;
   h3 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.work_control.restart}\` — restart server\n`;
 

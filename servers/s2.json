@@ -1,5 +1,6 @@
 {
-    "name": "server1_name",
+    "avaliable": 0,
+    "name": "server2",
     "port": "2020",
     "admins": [
         "184761278634524673"
