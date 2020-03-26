@@ -37,7 +37,7 @@
 
   "commands": {
     "general": {
-      "help":         "shelp",
+      "help":         "sshelp",
       "whoisadmin":   "luser",
       "adduser":      "adduser",
       "remuser":      "remuser",

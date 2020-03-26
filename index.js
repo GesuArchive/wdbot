@@ -238,13 +238,13 @@ client.on('message', message => {
     }
   };
 
-  if (message.content.startsWith(cfg.general.cmd_prefix + Server1.name)) {
-    cmd_to = message.content.slice(cfg.general.cmd_prefix.length).split(' ').slice(1).join(" ");
+  if (message.content.startsWith(cfg.general.cmd_prefix + "s " + Server1.name)) {
+    cmd_to = message.content.slice(cfg.general.cmd_prefix.length).split(' ').slice(2).join(" ");
     issue_command(message.author.id, cmd_to, Server1.name);
   };
 
-  if (message.content.startsWith(cfg.general.cmd_prefix + Server2.name)) {
-    cmd_to = message.content.slice(cfg.general.cmd_prefix.length).split(' ').slice(1).join(" ");
+  if (message.content.startsWith(cfg.general.cmd_prefix + "s " + Server2.name)) {
+    cmd_to = message.content.slice(cfg.general.cmd_prefix.length).split(' ').slice(2).join(" ");
     issue_command(message.author.id, cmd_to, Server2.name);
   };
 
@@ -294,8 +294,8 @@ async function issue_command(uid, cmd, server) {
   os_cmd_paths = {
     deploy:           `sh ${os_cmds.server_name}/tools/deploy.sh ${cfg.directories.REPOS}server_${sname}`,
     compile:          `cd ${os_cmds.server_name}/ && : > ../${sname}_compile.log && screen -dmS ${sname}compile -L -Logfile ../${sname}_compile.log DreamMaker tgstation.dme`,
-    update_compile:   `cd ${os_cmds.server_name}/ && : > ../${sname}_update.log && : > ../${sname}_compile.log && git pull > ../${sname}_update.log && screen -dmS ${sname}compile -L -Logfile ../${sname}_compile.log DreamMaker tgstation.dme`,
-    update:           `cd ${os_cmds.server_name}/ && : > ../${sname}_update.log && git pull > ../${sname}_update.log &`,
+    update_compile:   `cd ${os_cmds.server_name}/ && : > ../${sname}_update.log && : > ../${sname}_compile.log && git pull -f > ../${sname}_update.log && screen -dmS ${sname}compile -L -Logfile ../${sname}_compile.log DreamMaker tgstation.dme`,
+    update:           `cd ${os_cmds.server_name}/ && : > ../${sname}_update.log && git pull -f > ../${sname}_update.log &`,
 
     log_update_show:        `cat ${cfg.directories.REPOS}${sname}_update.log`,
     log_update_upload:          `${cfg.directories.REPOS}${sname}_update.log`,
@@ -424,20 +424,20 @@ async function print_help() {
   h1 +=    `\`${cfg.general.cmd_prefix}${cfg.commands.nodejs.uptime}\` — displays uptime in seconds of the current Node.js process running.\n`;
 
   var h2 = `\`${cfg.general.cmd_prefix}${cfg.commands.general.help}\` — displays this information\n`;
-  h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.compile}\` — runs compilation in the repo dir\n`;
-  h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.deploy}\` — moves compiled files and defined in «deploy.sh»\n`;
-  h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.update}\` — updates local repo from master\n`;
-  h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.log_update_show}\` — displays update log (via "cat")\n`;
-  h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.log_update_upload}\` — upload update log from host to here\n`;
-  h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.log_compile_show}\` — displays compile log (via "cat")\n`;
-  h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.log_compile_upload}\` — upload compile log from host to here\n`;
-  h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.log_dreamdaemon_show}\` — displays DreamDaemon log (via "cat")\n`;
-  h2 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.build_control.log_dreamdaemon_upload}\` — upload SERVER_NAME_dd.log from host to here\n`;
+  h2 +=    `\`${cfg.general.cmd_prefix}s SERVERNAME ${cfg.commands.build_control.compile}\` — runs compilation in the repo dir\n`;
+  h2 +=    `\`${cfg.general.cmd_prefix}s SERVERNAME ${cfg.commands.build_control.deploy}\` — moves compiled files and defined in «deploy.sh»\n`;
+  h2 +=    `\`${cfg.general.cmd_prefix}s SERVERNAME ${cfg.commands.build_control.update}\` — updates local repo from master\n`;
+  h2 +=    `\`${cfg.general.cmd_prefix}s SERVERNAME ${cfg.commands.build_control.log_update_show}\` — displays update log (via "cat")\n`;
+  h2 +=    `\`${cfg.general.cmd_prefix}s SERVERNAME ${cfg.commands.build_control.log_update_upload}\` — upload update log from host to here\n`;
+  h2 +=    `\`${cfg.general.cmd_prefix}s SERVERNAME ${cfg.commands.build_control.log_compile_show}\` — displays compile log (via "cat")\n`;
+  h2 +=    `\`${cfg.general.cmd_prefix}s SERVERNAME ${cfg.commands.build_control.log_compile_upload}\` — upload compile log from host to here\n`;
+  h2 +=    `\`${cfg.general.cmd_prefix}s SERVERNAME ${cfg.commands.build_control.log_dreamdaemon_show}\` — displays DreamDaemon log (via "cat")\n`;
+  h2 +=    `\`${cfg.general.cmd_prefix}s SERVERNAME ${cfg.commands.build_control.log_dreamdaemon_upload}\` — upload SERVERNAME_dd.log from host to here\n`;
 
   var h3 = `\`${cfg.general.cmd_prefix}${cfg.commands.general.servers_list}\` — list avaliable game servers name\n`;
-  h3 += `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.work_control.start}\` — start game server\n`;
-  h3 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.work_control.stop}\` — stop game server\n`;
-  h3 +=    `\`${cfg.general.cmd_prefix}SERVER_NAME ${cfg.commands.work_control.restart}\` — restart game server\n`;
+  h3 +=    `\`${cfg.general.cmd_prefix}s SERVERNAME ${cfg.commands.work_control.start}\` — start game server\n`;
+  h3 +=    `\`${cfg.general.cmd_prefix}s SERVERNAME ${cfg.commands.work_control.stop}\` — stop game server\n`;
+  h3 +=    `\`${cfg.general.cmd_prefix}s SERVERNAME ${cfg.commands.work_control.restart}\` — restart game server\n`;
 
   var h = `Help contents:\n`;
   h +=    `** • Host user privileges:**\n`;
