@@ -60,9 +60,10 @@
       "log_dreamdaemon_upload": "ddlog2"
     },
     "work_control": {
-    "restart": "restart",
-    "start":   "start",
-    "stop":    "stop"
+      "status":  "status",
+      "restart": "restart",
+      "start":   "start",
+      "stop":    "stop"
     }
   },
 	"debug": 1
