@@ -444,9 +444,10 @@ async function print_help() {
   h2 +=    `\`${cfg.general.cmd_prefix}s SERVERNAME ${cfg.commands.build_control.log_dreamdaemon_upload}\` — upload SERVERNAME_dd.log from host to here\n`;
 
   var h3 = `\`${cfg.general.cmd_prefix}${cfg.commands.general.servers_list}\` — list avaliable game servers name\n`;
+  h3 +=    `\`${cfg.general.cmd_prefix}s SERVERNAME ${cfg.commands.work_control.status}\` — check status of game server\n`;
+  h3 +=    `\`${cfg.general.cmd_prefix}s SERVERNAME ${cfg.commands.work_control.restart}\` — restart game server\n`;
   h3 +=    `\`${cfg.general.cmd_prefix}s SERVERNAME ${cfg.commands.work_control.start}\` — start game server\n`;
   h3 +=    `\`${cfg.general.cmd_prefix}s SERVERNAME ${cfg.commands.work_control.stop}\` — stop game server\n`;
-  h3 +=    `\`${cfg.general.cmd_prefix}s SERVERNAME ${cfg.commands.work_control.restart}\` — restart game server\n`;
 
   var h = `Help contents:\n`;
   h +=    `** • Host user privileges:**\n`;
