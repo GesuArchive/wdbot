@@ -6,7 +6,7 @@
 // Use wisely and report bugs if you find any.
 //--------------------------------------------------------------------------//
 
-process.chdir('/home/ubuntu/wdbot/');
+process.chdir('/home/ubuntu/_ss13_hosting/wdbot/'); // require('os').homedir();
 const os_config_path = './config.json';
 
 // message consoles colors
@@ -287,14 +287,14 @@ async function issue_command(uid, cmd, server) {
 
   console.log(`[${stat_msg.load}] ${sname}: Trying to load OS shell game servers control paths.`);
   os_cmds = {
-    server_repo: `${cfg.directories.REPOS}repo_${sname}`,
-    server_prod: `${cfg.directories.REPOS}server_${sname}`,
+    server_development: `${cfg.directories.REPOS}repo_${sname}`,
+    server_production:  `${cfg.directories.REPOS}server_${sname}`
   };
   os_cmd_paths = {
-    update:         `cd ${os_cmds.server_repo}/ && : > ../${sname}_update.log && git pull -f > ../${sname}_update.log &`,
-    compile:        `cd ${os_cmds.server_repo}/ && : > ../${sname}_compile.log && screen -dmS ${sname}compile -L -Logfile ../${sname}_compile.log DreamMaker tgstation.dme`,
-    update_compile: `cd ${os_cmds.server_repo}/ && : > ../${sname}_update.log && : > ../${sname}_compile.log && git pull -f > ../${sname}_update.log && screen -dmS ${sname}compile -L -Logfile ../${sname}_compile.log DreamMaker tgstation.dme`,
-    deploy:         `sh ${os_cmds.server_repo}/tools/deploy.sh ${cfg.directories.REPOS}server_${sname}`,
+    update:         `cd ${os_cmds.server_development}/ && : > ../${sname}_update.log && git pull -f > ../${sname}_update.log &`,
+    compile:        `cd ${os_cmds.server_development}/ && : > ../${sname}_compile.log && screen -dmS ${sname}compile -L -Logfile ../${sname}_compile.log DreamMaker tgstation.dme`,
+    update_compile: `cd ${os_cmds.server_development}/ && : > ../${sname}_update.log && : > ../${sname}_compile.log && git pull -f > ../${sname}_update.log && screen -dmS ${sname}compile -L -Logfile ../${sname}_compile.log DreamMaker tgstation.dme`,
+    deploy:         `sh ${os_cmds.server_development}/tools/deploy.sh ${os_cmds.server_production}server_${sname}`,
     //shell.exec('sh ' + REPOS_DIR + 'repo_' + sname + '/tools/deploy.sh ' + PROD_DIR + 'server_' + sname, { silent: true });
 
     log_update_show:        `cat ${cfg.directories.REPOS}${sname}_update.log`,
@@ -304,9 +304,9 @@ async function issue_command(uid, cmd, server) {
     log_dreamdaemon_show:   `cat ${cfg.directories.REPOS}${sname}_dd.log`,
     log_dreamdaemon_upload:     `${cfg.directories.REPOS}${sname}_dd.log`,
 
-    start1:           `[ "$(screen -ls | grep ${sname}server)"  ] && echo 1 || echo 0`,
-    start2:           `export LD_LIBRARY_PATH=${os_cmds.server_prod} && cd ${os_cmds.server_prod}/ && : > ../${sname}_dd.log && screen -dmS ${sname}server -L -Logfile ../${sname}_dd.log DreamDaemon tgstation.dmb -port ${port} -trusted -public -threads on -params config-directory=cfg`,
-    stop:             `screen -X -S ${sname}server quit`
+    start1: `[ "$(screen -ls | grep ${sname}server)" ] && echo 1 || echo 0`,
+    start2: `export LD_LIBRARY_PATH=${os_cmds.server_production} && cd ${os_cmds.server_production}/ && : > ../${sname}_dd.log && screen -dmS ${sname}server -L -Logfile ../${sname}_dd.log DreamDaemon tgstation.dmb -port ${port} -trusted -public -threads on -params config-directory=cfg`,
+    stop:   `screen -X -S ${sname}server quit`
   };
   console.log(`[${stat_msg.ok}] ${sname}: OS shell game servers control paths loaded.`);
 
@@ -335,34 +335,40 @@ async function issue_command(uid, cmd, server) {
           break;
 
         case cfg.commands.build_control.log_update_show:
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to send update log.`);
-          var log = shell.exec(os_cmd_paths.log_update_show, { silent: true });
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`\`\`\`${log}\`\`\``, { split: true });
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to send update log («cat»). If nothing printed, that can be error.`);
           console.log(`[${stat_msg.load}] ${sname}: os_cmd_paths.log_update_show=«${os_cmd_paths.log_update_show}».`);
+          var log = shell.exec(os_cmd_paths.log_update_show, { silent: true });
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${log}`, { split: true });
           break;
         case cfg.commands.build_control.log_update_upload:
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to send update log.`);
-          var log = shell.exec(os_cmd_paths.log_update_upload, { silent: true });
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${log}`, { split: true });
-          console.log(`[${stat_msg.load}] ${sname}: os_cmd_paths.log_update_show=«${os_cmd_paths.log_update_upload}».`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to send update log (upload). If nothing printed, that can be error.`);
+          console.log(`[${stat_msg.load}] ${sname}: os_cmd_paths.log_update_upload=«${os_cmd_paths.log_update_upload}».`);
+          if (fs.existsSync(os_cmd_paths.log_update_upload)) {
+            client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send({ files: [os_cmd_paths.log_update_upload] });
+          } else {
+            client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`It seems that there is no required file.`);
+          };
           break;
         case cfg.commands.build_control.log_compile_show:
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to send compile log.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to send compile log («cat»). If nothing printed, that can be error.`);
           var log = shell.exec(os_cmd_paths.log_compile_show, { silent: true });
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`\`\`\`${log}\`\`\``);
-          break;
-        case cfg.commands.build_control.log_compile_upload:
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to send compile log.`);
-          var log = shell.exec(os_cmd_paths.log_compile_upload, { silent: true });
           client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${log}`);
           break;
+        case cfg.commands.build_control.log_compile_upload:
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to send compile log (upload). If nothing printed, that can be error.`);
+          if (fs.existsSync(os_cmd_paths.log_compile_upload)) {
+            client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send({ files: [os_cmd_paths.log_compile_upload] });
+          } else {
+            client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`It seems that there is no required file.`);
+          };
+          break;
         case cfg.commands.build_control.log_dreamdaemon_show:
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to send dd log via "cat".`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to send dd log («cat»). If nothing printed, that can be error.`);
           var log = shell.exec(os_cmd_paths.log_dreamdaemon_show, { silent: true });
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`\`\`\`${log}\`\`\``, { split: true });
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${log}`, { split: true });
           break;
         case cfg.commands.build_control.log_dreamdaemon_upload:
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to send dd log directly.`);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to send dd log (upload). If nothing printed, that can be error.`);
           if (fs.existsSync(os_cmd_paths.log_dreamdaemon_upload)) {
             client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send({ files: [os_cmd_paths.log_dreamdaemon_upload] });
           } else {
