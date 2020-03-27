@@ -287,15 +287,15 @@ async function issue_command(uid, cmd, server) {
 
   console.log(`[${stat_msg.load}] ${sname}: Trying to load OS shell game servers control paths.`);
   os_cmds = {
-    server_name:      `${cfg.directories.REPOS}server_${sname}`,
-    server_repo:      `${cfg.directories.REPOS}repo_${sname}`,
-    server_prod_name: `${cfg.directories.REPOS}server_${sname}`,
+    server_repo: `${cfg.directories.REPOS}repo_${sname}`,
+    server_prod: `${cfg.directories.REPOS}server_${sname}`,
   };
   os_cmd_paths = {
-    deploy:           `sh ${os_cmds.server_name}/tools/deploy.sh ${cfg.directories.REPOS}server_${sname}`,
-    compile:          `cd ${os_cmds.server_name}/ && : > ../${sname}_compile.log && screen -dmS ${sname}compile -L -Logfile ../${sname}_compile.log DreamMaker tgstation.dme`,
-    update_compile:   `cd ${os_cmds.server_name}/ && : > ../${sname}_update.log && : > ../${sname}_compile.log && git pull -f > ../${sname}_update.log && screen -dmS ${sname}compile -L -Logfile ../${sname}_compile.log DreamMaker tgstation.dme`,
-    update:           `cd ${os_cmds.server_name}/ && : > ../${sname}_update.log && git pull -f > ../${sname}_update.log &`,
+    update:         `cd ${os_cmds.server_repo}/ && : > ../${sname}_update.log && git pull -f > ../${sname}_update.log &`,
+    compile:        `cd ${os_cmds.server_repo}/ && : > ../${sname}_compile.log && screen -dmS ${sname}compile -L -Logfile ../${sname}_compile.log DreamMaker tgstation.dme`,
+    update_compile: `cd ${os_cmds.server_repo}/ && : > ../${sname}_update.log && : > ../${sname}_compile.log && git pull -f > ../${sname}_update.log && screen -dmS ${sname}compile -L -Logfile ../${sname}_compile.log DreamMaker tgstation.dme`,
+    deploy:         `sh ${os_cmds.server_repo}/tools/deploy.sh ${cfg.directories.REPOS}server_${sname}`,
+    //shell.exec('sh ' + REPOS_DIR + 'repo_' + sname + '/tools/deploy.sh ' + PROD_DIR + 'server_' + sname, { silent: true });
 
     log_update_show:        `cat ${cfg.directories.REPOS}${sname}_update.log`,
     log_update_upload:          `${cfg.directories.REPOS}${sname}_update.log`,
@@ -305,18 +305,18 @@ async function issue_command(uid, cmd, server) {
     log_dreamdaemon_upload:     `${cfg.directories.REPOS}${sname}_dd.log`,
 
     start1:           `[ "$(screen -ls | grep ${sname}server)"  ] && echo 1 || echo 0`,
-    start2:           `export LD_LIBRARY_PATH=${os_cmds.server_prod_name} && cd ${os_cmds.server_prod_name}/ && : > ../${sname}_dd.log && screen -dmS ${sname}server -L -Logfile ../${sname}_dd.log DreamDaemon tgstation.dmb -port ${port} -trusted -public -threads on -params config-directory=cfg`,
+    start2:           `export LD_LIBRARY_PATH=${os_cmds.server_prod} && cd ${os_cmds.server_prod}/ && : > ../${sname}_dd.log && screen -dmS ${sname}server -L -Logfile ../${sname}_dd.log DreamDaemon tgstation.dmb -port ${port} -trusted -public -threads on -params config-directory=cfg`,
     stop:             `screen -X -S ${sname}server quit`
   };
-  console.log(`[${stat_msg.load}] ${sname}: OS shell game servers control paths loaded.`);
+  console.log(`[${stat_msg.ok}] ${sname}: OS shell game servers control paths loaded.`);
 
   if (admins.includes(uid)) {
     if (devs.includes(uid)) {
       switch (cmd) {
-        case cfg.commands.build_control.deploy:
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to execute deploy build of game server.`);
-          shell.exec(os_cmd_paths.deploy, { silent: true });
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Deploy command executed.`);
+        case cfg.commands.build_control.update:
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to execute update.`);
+          shell.exec(os_cmd_paths.update, { silent: true });
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Update command executed.`);
           break;
         case cfg.commands.build_control.compile:
           client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to execute compile build of game server.`);
@@ -328,16 +328,16 @@ async function issue_command(uid, cmd, server) {
           shell.exec(os_cmd_paths.update_compile, { silent: true });
           client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Started Auto-update-compile.`);
           break;
-        case cfg.commands.build_control.update:
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to execute update.`);
-          shell.exec(os_cmd_paths.update, { silent: true });
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Update command executed.`);
+        case cfg.commands.build_control.deploy:
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to execute deploy build of game server.`);
+          shell.exec(os_cmd_paths.deploy, { silent: true });
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Deploy command executed.`);
           break;
 
         case cfg.commands.build_control.log_update_show:
           client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to send update log.`);
           var log = shell.exec(os_cmd_paths.log_update_show, { silent: true });
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${log}`, { split: true });
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`\`\`\`${log}\`\`\``, { split: true });
           console.log(`[${stat_msg.load}] ${sname}: os_cmd_paths.log_update_show=«${os_cmd_paths.log_update_show}».`);
           break;
         case cfg.commands.build_control.log_update_upload:
@@ -354,12 +354,12 @@ async function issue_command(uid, cmd, server) {
         case cfg.commands.build_control.log_compile_upload:
           client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to send compile log.`);
           var log = shell.exec(os_cmd_paths.log_compile_upload, { silent: true });
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`\`\`\`${log}\`\`\``);
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${log}`);
           break;
         case cfg.commands.build_control.log_dreamdaemon_show:
           client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to send dd log via "cat".`);
           var log = shell.exec(os_cmd_paths.log_dreamdaemon_show, { silent: true });
-          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${log}`, { split: true });
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`\`\`\`${log}\`\`\``, { split: true });
           break;
         case cfg.commands.build_control.log_dreamdaemon_upload:
           client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to send dd log directly.`);
@@ -428,9 +428,9 @@ async function print_help() {
   if (cfg.script_debug) console.log(`${stat_msg.info} Function \"print_help\" called.`);
   //console.log(arguments.callee.name);
 
-  var h1 = `\`${cfg.general.cmd_prefix}${cfg.commands.general.adduser} SERVER_NAME UID\` — adds user to game server contol\n`;
-  h1 +=    `\`${cfg.general.cmd_prefix}${cfg.commands.general.remuser} SERVER_NAME UID\` — removes user from game server control\n`;
-  h1 +=    `\`${cfg.general.cmd_prefix}${cfg.commands.general.whoisadmin} SERVER_NAME\` — list of users in game server control\n`;
+  var h1 = `\`${cfg.general.cmd_prefix}${cfg.commands.general.adduser} SERVERNAME UID\` — adds user to game server contol\n`;
+  h1 +=    `\`${cfg.general.cmd_prefix}${cfg.commands.general.remuser} SERVERNAME UID\` — removes user from game server control\n`;
+  h1 +=    `\`${cfg.general.cmd_prefix}${cfg.commands.general.whoisadmin} SERVERNAME\` — list of users in game server control\n`;
   h1 +=    `\`${cfg.general.cmd_prefix}${cfg.commands.nodejs.version}\` — displays the Node.js version string.\n`;
   h1 +=    `\`${cfg.general.cmd_prefix}${cfg.commands.nodejs.uptime}\` — displays uptime in seconds of the current Node.js process running.\n`;
 
