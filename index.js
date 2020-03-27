@@ -334,15 +334,17 @@ async function issue_command(uid, cmd, server) {
           client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Update command executed.`);
           break;
 
-          case cfg.commands.build_control.log_update_show:
+        case cfg.commands.build_control.log_update_show:
           client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to send update log.`);
           var log = shell.exec(os_cmd_paths.log_update_show, { silent: true });
           client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${log}`, { split: true });
+          console.log(`[${stat_msg.load}] ${sname}: os_cmd_paths.log_update_show=«${os_cmd_paths.log_update_show}».`);
           break;
-          case cfg.commands.build_control.log_update_upload:
+        case cfg.commands.build_control.log_update_upload:
           client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to send update log.`);
           var log = shell.exec(os_cmd_paths.log_update_upload, { silent: true });
           client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`${log}`, { split: true });
+          console.log(`[${stat_msg.load}] ${sname}: os_cmd_paths.log_update_show=«${os_cmd_paths.log_update_upload}».`);
           break;
         case cfg.commands.build_control.log_compile_show:
           client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`**${sname}**: Trying to send compile log.`);
