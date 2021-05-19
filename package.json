@@ -1,0 +1,13 @@
+{
+  "name": "wdbot",
+  "dependencies": {
+    "discord.js": "^12.5.3",
+    "shelljs": "^0.8.4",
+    "chokidar": "^3.5.1",
+    "log-timestamp": "^0.3.0",
+    "is-root": "^3.0.0"
+  },
+  "devDependencies": {
+    "forever": "^3.0.4"
+  }
+}

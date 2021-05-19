@@ -6,7 +6,23 @@
 // Use wisely and report bugs if you find any.
 //--------------------------------------------------------------------------//
 
-process.chdir('/home/ubuntu/_ss13_hosting/wdbot/'); // require('os').homedir();
+//console.log(process.platform);
+
+var my_os = process.platform;
+
+if        (my_os === 'linux') {
+  console.log("Linux OS, CWD: " + process.cwd());
+  process.chdir('/home/ubuntu/_ss13_hosting/wdbot/'); 
+  //process.chdir(process.cwd()); // require('os').homedir();
+} else if (my_os === 'win32') {
+  console.log("Windows OS, CWD: " + process.cwd());
+  //process.chdir('C:/wdbot/'); 
+  process.chdir(process.cwd());
+} else {
+  console.error("Unknown OS.");
+  process.exit(1);
+};
+
 const os_config_path = './config.json';
 
 // message consoles colors
@@ -52,11 +68,22 @@ if isRoot() {
   return;
 };*/
 
+//try {
 const Discord  = require('discord.js');
 const shell    = require('shelljs');
 const fs       = require('fs');
 const chokidar = require('chokidar');
+const { exit } = require("process");
 require('log-timestamp');
+/*
+}
+catch (e) {
+  if (e instanceof Error && e.code === "MODULE_NOT_FOUND")
+      console.log(`${mclr.Rst}[____-__-__T__:__:__.___Z] [${stat_msg.boot}] Script started, but can't load some modules!...`);
+  else
+      throw e;
+}
+*/
 
 console.log(`[${stat_msg.info}] This platform is: ${process.platform}`);
 
@@ -82,8 +109,8 @@ console.log(`[${stat_msg.load}] ${lang.server2_settings_loading}`);
 const Server2 = JSON.parse(fs.readFileSync(cfg.directories.S2_JSON, 'utf8'));
 
 console.log(`[${stat_msg.ok}] ${lang.servers_settings_loaded}`);
-const client      = new Discord.Client();
-const cmd_channel    = client.channels.cache.get(cfg.channels_id.COMMAND_LINE);
+const client = new Discord.Client();
+const cmd_channel = client.channels.cache.get(cfg.channels_id.COMMAND_LINE);
 const endround_channel = client.channels.cache.get(cfg.channels_id.ENDROUND);
 
 client.on('ready', () => {

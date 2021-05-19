@@ -1,0 +1,7 @@
+
+# This contains secrets, don't store in source control
+.env
+
+# Node.JS files
+/node_modules/
+/package-lock.json
