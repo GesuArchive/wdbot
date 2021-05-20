@@ -1,5 +1,6 @@
 {
   "name": "wdbot",
+  "homepage": "https://github.com/Alexs410/white-dream-main#readme",
   "dependencies": {
     "discord.js": "^12.5.3",
     "shelljs": "^0.8.4",

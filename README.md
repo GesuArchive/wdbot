@@ -1,15 +1,63 @@
 
 <p align="center">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/7/7a/Spacestation13_logo.png" />  
+  <img src="misc/Space_Station_13_logo_(space_bg).png" />  
   <h2 align="center">
-    <a href="https://github.com/frosty-dev/white-dream-main/">«White Dream»</a> Server Bot
+    <a href="https://github.com/frosty-dev/white-dream-main/">«White Dream» project</a> Server Control Bot
   </h2>
-  <p align="center">🤖 Helps with server on <a href="http://byond.com/">BYOND</a>.</p>
+  <p align="center">🤖 Helps with server that runs on <a href="http://byond.com/">BYOND</a> <a href=" https://github.com/topics/byond?l=dm">DM Lang</a>.
+  </p>
 </p>
 
-[![forthebadge](https://forthebadge.com/images/badges/made-with-javascript.svg)](https://forthebadge.com) [![forthebadge](https://forthebadge.com/images/badges/made-with-markdown.svg)](https://forthebadge.com)
-[![made-for-VSCode](https://img.shields.io/badge/Made%20for-VSCode-1f425f.svg)](https://code.visualstudio.com/) [![Crowdin](https://badges.crowdin.net/wdbot/localized.svg)](https://crowdin.com/project/wdbot) ![GitHub last commit](https://img.shields.io/github/last-commit/Gesugao-san/wdbot) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![GitHub forks](https://img.shields.io/github/forks/Gesugao-san/wdbot.svg?style=social&label=Fork&maxAge=2592000)](https://GitHub.com/Gesugao-san/wdbot/network/) [![GitHub stars](https://img.shields.io/github/stars/Gesugao-san/wdbot.svg?style=social&label=Star&maxAge=2592000)](https://GitHub.com/Gesugao-san/wdbot/stargazers/)
+<p align="center">
+  <a href="https://forthebadge.com">
+    <img src="https://forthebadge.com/images/badges/made-with-javascript.svg"/> 
+  </a>
+  <a href="https://forthebadge.com">
+    <img src="https://forthebadge.com/images/badges/made-with-markdown.svg"/> 
+  </a>
+  <br>
+  <a href="https://code.visualstudio.com/">
+    <img src="misc/Made-for-VSCode-1f425f.svg"/> 
+  </a>
+  <a href="">
+    <img src="https://status.david-dm.org/gh/Gesugao-san/wdbot.svg"/> 
+  </a>
+  <a href="https://crowdin.com/project/wdbot">
+    <img src="https://badges.crowdin.net/wdbot/localized.svg"/> 
+  </a>
+  <a href="https://github.com/Gesugao-san/wdbot/issues?q=is%3Apr+is%3Aclosed">
+    <img src="https://img.shields.io/github/last-commit/Gesugao-san/wdbot"/> 
+  </a>
+  <a href="https://opensource.org/licenses/MIT">
+    <img src="misc/License-MIT-yellow.svg"/> 
+  </a>
+  <br>
+  <a href="https://GitHub.com/Gesugao-san/wdbot/network/">
+    <img src="https://img.shields.io/github/forks/Gesugao-san/wdbot.svg?style=social&label=Fork&maxAge=2592000"/> 
+  </a>
+  <a href="https://GitHub.com/Gesugao-san/wdbot/stargazers/">
+    <img src="https://img.shields.io/github/stars/Gesugao-san/wdbot.svg?style=social&label=Star&maxAge=2592000"/> 
+  </a>
+</p>
+
+
+<span style="height: 60px; background-color:currentColor" width="120px">
+  <object data="http://www.byond.com/download/version.txt" type="text/plain" width="120px" height="60px" style="background-color: currentColor">
+    <a href="http://www.byond.com/download/version.txt" style="color: black">No Support?</a>
+  </object>
+</span>
+
+<span style="height: 60px; background-color:currentColor" width="120px">
+  <iframe src="http://www.byond.com/download/version.txt" frameborder="1" width="120px" height="60px" style="background-color: currentColor"></iframe>
+</span>
+
+<br>
+
+<span style="background-color: currentColor">
+  <span style="color: black">
+  Text here
+  </span>
+</span>
 
 
 # Space Station 13 servers control bot
