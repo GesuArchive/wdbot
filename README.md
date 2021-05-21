@@ -30,16 +30,16 @@
 
   <a href="https://code.visualstudio.com/">
     <img src="misc/Made-for-VSCode-1f425f.svg"/>
-  </a>
+  </a> ▔
   <a href="">
     <img src="https://badgen.net/github/checks/Gesugao-san/wdbot/master/ubuntu"/>
-  </a>
+  </a> ▔
   <a href="">
     <img src="https://badgen.net/github/checks/Gesugao-san/wdbot/master/windows"/>
-  </a>
+  </a> ▔
   <a href="">
     <img src="https://img.shields.io/snyk/vulnerabilities/github/Gesugao-san/wdbot"/>
-  </a>
+  </a> ▔
   <a href="https://opensource.org/licenses/MIT">
     <img src="misc/License-MIT-yellow.svg"/>
   </a>
@@ -48,12 +48,13 @@
 
   <a href="">
     <img src="https://status.david-dm.org/gh/Gesugao-san/wdbot.svg"/>
+  </a> ▔
   <a href="">
     <img src="https://status.david-dm.org/gh/Gesugao-san/wdbot.svg?type=dev"/>
-  </a>
+  </a> ▔
   <a href="https://crowdin.com/project/wdbot">
     <img src="https://badges.crowdin.net/wdbot/localized.svg"/>
-  </a>
+  </a> ▔
   <a href="https://github.com/Gesugao-san/wdbot/issues?q=is%3Apr+is%3Aclosed">
     <img src="https://img.shields.io/github/last-commit/Gesugao-san/wdbot"/>
   </a>
