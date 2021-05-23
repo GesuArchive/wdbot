@@ -92,33 +92,26 @@
 
 This bot greatly simplifies the hosting of game servers. It is not necessary, but without it, the life of the host will be clearly more difficult.
 
-Runs on [Node.js®](https://nodejs.org/) and using [Discord](https://discord.com/).
+Runs on [Node.js ®](https://nodejs.org/) and using [Discord ®](https://discord.com/).
 
 ## How to use this
 
 ### Linux
 
-0. Check if the [BYOND](http://byond.com/) platform is installed. [If not, then find out the latest version here](https://secure.byond.com/download/).
-    At the time of writing, the current Stable version is 513.1542, but you can check it here:
+0. Check if the [BYOND](http://byond.com/) platform is installed. If not, then find out the latest version **[here](https://secure.byond.com/download/)**.
+    At the time of writing, the current Stable version is 513.1542, but you can check it <b><a href="http://www.byond.com/download/version.txt">here</a></b>:
     <table>
-    <tr align="center">
+    <tr>
       <td>
-        <small>White Theme</small><br>
-        <object data="http://www.byond.com/download/version.txt" type="text/plain" width="90px" height="60px" style="background-color: white">
-        <a href="http://www.byond.com/download/version.txt" style="color: black">I cann't open latest version file for you, sorry</a>
-        </object>
+        513.1542<br>
+        514.1554
       </td>
       <td>
-        <small>Gray Theme</small><br>
-        <iframe src="http://www.byond.com/download/version.txt" frameborder="1" width="90px" height="60px" style="background-color: gray"></iframe>
-      </td>
-      <td>
-        First line - Stable version<br>
-        Second line - Beta version<br>
+        Stable version<br>
+        Beta version
       </td>
     </tr>
     </table>
-    Or manually <a href="http://www.byond.com/download/version.txt">here</a>.
 
 Download and unzip the installation package:
 
@@ -164,15 +157,11 @@ MIT.
 ---
 
 <p align="center">
-  <iframe src="https://free.timeanddate.com/clock/i7th8w1f/n179/fc666/tct/pct/ftb/bo2/pd2/tt0/td2/th2/ta1/tb1" frameborder="0" width="350" height="19" allowtransparency="true">Current Time (New York)</iframe>
-
-  <br>
-
   <a href="https://2ip.ua/ru/" title="Check your IP address">
     <img src="https://2ip.ua/service/ipimg/ip/small1.png">
   </a>
-  <!--
+  <br>
   <img src="https://userbarkin.ru/proba/7.png">
+  <br>
   <img src="https://2ip.io/bar/ip3.gif"/>
-  -->
 </p>
