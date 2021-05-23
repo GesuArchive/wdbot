@@ -136,15 +136,15 @@ DreamDaemon
 
 In case that the help information is displayed, it means that the BYOND is installed and you can proceed.
 
-1. Copy [`index.js`](/index.js) and [`s1.json`](servers/s1.json) files into some dir, it doesn't matters what dir.
+1. Copy [`index.js`](./index.js) and [`s1.json`](./servers/s1.json) files into some dir, it doesn't matters what dir.
 2. Install all dependencies by issuing this `npm i discord.js shelljs chokidar log-timestamp is-root`.
-3. Edit[`index.js`](/index.js) and [`s1.json`](servers/s1.json) (you can create multiple servers) as your server(s) need. ~~The main things you need to edit is on top of the file.~~
+3. Edit[`index.js`](./index.js) and [`s1.json`](./servers/s1.json) (you can create multiple servers) as your server(s) need. ~~The main things you need to edit is on top of the file.~~
 4. Create dirs for `production` and `repos`. In the `repos` dir clone your server and name his folder like `repo_SERVERNAME`.
-5. Replace your `deploy.sh` in the server repo with ours.
+5. Replace your [`deploy.sh`](./deploy.sh) in the server repo with ours.
 6. Now run `node index.js` and that is.
 7. You forgot to install screen: `sudo apt install screen`
 
-Also use this, if your bot crashes sometimes: https://www.npmjs.com/package/forever
+If your bot crashes sometimes, please use [this](https://www.npmjs.com/package/forever).
 Then need to compile all libs and place in the server prod dir.
 
 ## Windows
@@ -157,11 +157,5 @@ MIT.
 ---
 
 <p align="center">
-  <a href="https://2ip.ua/ru/" title="Check your IP address">
-    <img src="https://2ip.ua/service/ipimg/ip/small1.png">
-  </a>
-  <br>
-  <img src="https://userbarkin.ru/proba/7.png">
-  <br>
   <img src="https://2ip.io/bar/ip3.gif"/>
 </p>
