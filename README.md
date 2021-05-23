@@ -1,20 +1,20 @@
 
 <p align="center">
-  <img src="misc/Space_Station_13_logo_(space_bg).png" />
+  <img src="assets/Space_Station_13_logo_(space_bg).png" />
   <h2 align="center">
-    <a href="https://github.com/frosty-dev/white-dream-main/">White Dream Project</a> 🤖 Server Control Bot
+    <a href="https://github.com/frosty-dev/white-dream-main/">White Dream Project</a> 🤖 Server Control Unit
   </h2>
 
-  <p align="center">Helps commicating with the server (that's runs on <a href="http://byond.com/">BYOND</a> <a href=" https://github.com/topics/byond?l=dm">DM Lang</a>) and <a href="https://discord.com/">Discord</a>.
+  <p align="center">Helps commicating with the server (that's runs on <a href="http://byond.com/">BYOND</a> <a href=" https://github.com/topics/byond?l=dm">DM Lang</a>) and <a href="https://discord.com/">Discord</a> bot.
   </p>
 </p>
 
 <p align="center">
   <a href="">
-    <img src="misc/uses-badges.svg"/>
+    <img src="assets/uses-badges.svg"/>
   </a>
   <a href="">
-    <img src="misc/open-source.svg"/>
+    <img src="assets/open-source.svg"/>
   </a>
 
   <br>
@@ -29,7 +29,7 @@
   <br>
 
   <a href="https://code.visualstudio.com/">
-    <img src="misc/Made-for-VSCode-1f425f.svg"/>
+    <img src="assets/Made_in-VS_Code-1f425f.svg "/>
   </a>
   <a href="">
     <img src="https://badgen.net/github/checks/Gesugao-san/wdbot/master/ubuntu"/>
@@ -41,7 +41,7 @@
     <img src="https://img.shields.io/snyk/vulnerabilities/github/Gesugao-san/wdbot"/>
   </a>
   <a href="https://opensource.org/licenses/MIT">
-    <img src="misc/License-MIT-yellow.svg"/>
+    <img src="assets/License-MIT-yellow.svg"/>
   </a>
 
   <br>
@@ -66,6 +66,9 @@
   <a href="https://GitHub.com/Gesugao-san/wdbot/stargazers/">
     <img src="https://img.shields.io/github/stars/Gesugao-san/wdbot.svg?style=social&label=Star&maxAge=2592000"/>
   </a>
+  <a href="https://funclub.pro/">
+    <img src="https://img.shields.io/website?down_color=red&down_message=offline&up_color=green&up_message=online&url=https://funclub.pro/"/>
+  </a>
   <a href="https://discord.com/invite/bNrAW37">
     <img src="https://img.shields.io/discord/433622753350778890.svg?color=7289da&label=FUNCLUB&logo=discord&style=flat-square"/>
   </a>
@@ -79,6 +82,7 @@
 ** [How to use this](#how-to-use-this)
 *** [Linux](#linux)
 *** [Windows](#windows)
+** [License](#license)
 
 </details>
 
@@ -88,24 +92,24 @@
 
 This bot greatly simplifies the hosting of game servers. It is not necessary, but without it, the life of the host will be clearly more difficult.
 
-Runs on Node.js® and using Discord.
+Runs on [Node.js®](https://nodejs.org/) and using [Discord](https://discord.com/).
 
 ## How to use this
 
 ### Linux
 
-0. Check if the BYOND platform is installed. [If not, then find out the latest version here.](https://secure.byond.com/download/)
+0. Check if the [BYOND](http://byond.com/) platform is installed. [If not, then find out the latest version here](https://secure.byond.com/download/).
     At the time of writing, the current Stable version is 513.1542, but you can check it here:
     <table>
-    <tr>
+    <tr align="center">
       <td>
-        White Theme<br>
+        <small>White Theme</small><br>
         <object data="http://www.byond.com/download/version.txt" type="text/plain" width="90px" height="60px" style="background-color: white">
         <a href="http://www.byond.com/download/version.txt" style="color: black">I cann't open latest version file for you, sorry</a>
         </object>
       </td>
       <td>
-        Gray Theme<br>
+        <small>Gray Theme</small><br>
         <iframe src="http://www.byond.com/download/version.txt" frameborder="1" width="90px" height="60px" style="background-color: gray"></iframe>
       </td>
       <td>
@@ -152,3 +156,23 @@ Then need to compile all libs and place in the server prod dir.
 
 ## Windows
 To do or delete.
+
+# License
+
+MIT.
+
+---
+
+<p align="center">
+  <iframe src="https://free.timeanddate.com/clock/i7th8w1f/n179/fc666/tct/pct/ftb/bo2/pd2/tt0/td2/th2/ta1/tb1" frameborder="0" width="350" height="19" allowtransparency="true">Current Time (New York)</iframe>
+
+  <br>
+
+  <a href="https://2ip.ua/ru/" title="Check your IP address">
+    <img src="https://2ip.ua/service/ipimg/ip/small1.png">
+  </a>
+  <!--
+  <img src="https://userbarkin.ru/proba/7.png">
+  <img src="https://2ip.io/bar/ip3.gif"/>
+  -->
+</p>
