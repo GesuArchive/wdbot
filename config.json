@@ -18,8 +18,8 @@
     "DEMOS":   "/home/ubuntu/_ss13_hosting/production/server_white/data/logs/demos/",
     "REPOS":   "/home/ubuntu/_ss13_hosting/development/",
     "PROD":    "/home/ubuntu/_ss13_hosting/production/",
-    "LOC_ENG": "./locales/old/lang.en.js",
-    "LOC_RUS": "./locales/old/lang.ru.js",
+    "LOC_ENG": "./locales/en.json",
+    "LOC_RUS": "./locales/ru.json",
     "S1_JSON": "./servers/s1.json",
     "S2_JSON": "./servers/s2.json"
   },
