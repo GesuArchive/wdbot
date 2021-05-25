@@ -6,6 +6,7 @@
     "discord.js": "^12.5.3",
     "is-root": "^3.0.0",
     "log-timestamp": "^0.3.0",
+    "resx": "^2.0.3",
     "resx-parser": "^1.0.1",
     "shelljs": "^0.8.4",
     "xml-js": "^1.6.11"
