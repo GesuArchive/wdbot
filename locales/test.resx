@@ -12,7 +12,4 @@
     <data name="Test Key 2" xml:space="preserve">
         <value>Test Value 2</value>
     </data>
-    <data name="LocaleTestDone" xml:space="preserve">
-        <value>Locale Test is Done. Congratulations!</value>
-    </data>
 </root>
