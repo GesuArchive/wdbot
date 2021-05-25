@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <data name="Test Key 1" xml:space="preserve">
+        <value>Test Value 1</value>
+        <comment>Test Comment 1</comment>
+    </data>
+    <data name="Test Key 2" xml:space="preserve">
+        <value>Test Value 2</value>
+    </data>
+    <!-- single line comment -->
+    <!-- multi
+  line
+  comment -->
+</root>

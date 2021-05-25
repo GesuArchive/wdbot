@@ -1,5 +1,7 @@
 {
     "recommendations": [
-        "nodesource.vscode-for-node-js-development-pack"
+        "nodesource.vscode-for-node-js-development-pack",
+        "prateekmahendrakar.resxpress",
+        "crowdin.vscode-crowdin"
     ]
 }

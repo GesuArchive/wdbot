@@ -12,11 +12,11 @@ var my_os = process.platform;
 
 if        (my_os === 'linux') {
   console.log("Linux OS, CWD: " + process.cwd());
-  process.chdir('/home/ubuntu/_ss13_hosting/wdbot/'); 
+  process.chdir('/home/ubuntu/_ss13_hosting/wdbot/');
   //process.chdir(process.cwd()); // require('os').homedir();
 } else if (my_os === 'win32') {
   console.log("Windows OS, CWD: " + process.cwd());
-  //process.chdir('C:/wdbot/'); 
+  //process.chdir('C:/wdbot/');
   process.chdir(process.cwd());
 } else {
   console.error("Unknown OS.");

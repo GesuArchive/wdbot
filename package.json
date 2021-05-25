@@ -10,5 +10,28 @@
   },
   "devDependencies": {
     "forever": "^3.0.4"
+  },
+  "description": "<p align=\"center\">\r   <img src=\"assets/Space_Station_13_logo_(space_bg).png\" />\r   <h2 align=\"center\">\r     <a href=\"https://github.com/frosty-dev/white-dream-main/\">White Dream Project</a> 🤖 Server Control Unit\r   </h2>",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gesugao-san/wdbot.git"
+  },
+  "keywords": [
+    "javascript",
+    "bot",
+    "Discord",
+    "BYOND",
+    "SS13",
+    "White_Dream"
+  ],
+  "author": "Gesugao-san",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Gesugao-san/wdbot/issues"
   }
 }
