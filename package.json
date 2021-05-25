@@ -2,11 +2,13 @@
   "name": "wdbot",
   "homepage": "https://github.com/Alexs410/white-dream-main#readme",
   "dependencies": {
-    "discord.js": "^12.5.3",
-    "shelljs": "^0.8.4",
     "chokidar": "^3.5.1",
+    "discord.js": "^12.5.3",
+    "is-root": "^3.0.0",
     "log-timestamp": "^0.3.0",
-    "is-root": "^3.0.0"
+    "resx-parser": "^1.0.1",
+    "shelljs": "^0.8.4",
+    "xml-js": "^1.6.11"
   },
   "devDependencies": {
     "forever": "^3.0.4"
