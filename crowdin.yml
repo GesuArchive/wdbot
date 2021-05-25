@@ -1,3 +1,10 @@
+project_id: 456846
+api_token: "apiToken" # secure problem?
+#base_path: "./" # optional
+#branch: "master" # optional
+#base_url: "https://api.crowdin.com" # optional (for Crowdin Enterprise only)
+preserve_hierarchy: true
+
 files:
-  - source: /crowdin_test.json
-    translation: /translation/%locale_with_underscore%.%file_extension%
+  - source: locales/en.json
+    translation: /locales/%two_letters_code%.%file_extension%

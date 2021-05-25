@@ -12,11 +12,11 @@ var my_os = process.platform;
 
 if        (my_os === 'linux') {
   console.log("Linux OS, CWD: " + process.cwd());
-  process.chdir('/home/ubuntu/_ss13_hosting/wdbot/'); 
+  process.chdir('/home/ubuntu/_ss13_hosting/wdbot/');
   //process.chdir(process.cwd()); // require('os').homedir();
 } else if (my_os === 'win32') {
   console.log("Windows OS, CWD: " + process.cwd());
-  //process.chdir('C:/wdbot/'); 
+  //process.chdir('C:/wdbot/');
   process.chdir(process.cwd());
 } else {
   console.error("Unknown OS.");
@@ -93,11 +93,11 @@ const cfg = JSON.parse(fs.readFileSync(os_config_path, 'utf8'));
 console.log(`[${stat_msg.ok}] Configs loaded, help command: ${cfg.general.cmd_prefix}${cfg.commands.general.help}. Trying to load localization files...`);
 if ((cfg.general.OUTPUT_LANGUAGE == "ENG") || (typeof(cfg.general.OUTPUT_LANGUAGE) != String))  {
   console.log(`[${stat_msg.load}] According to configuration file, trying to loading file of language: English...`);
-  const lang = require(cfg.directories.LOC_ENG);
+  var lang = JSON.parse(fs.readFileSync(cfg.directories.LOC_ENG, 'utf8'));
   console.log(`[${stat_msg.ok}] Localization file file required.`);
 } else {
   console.log(`[${stat_msg.loading}] According to configuration, trying to loading file of language: Russian...`);
-  const lang = require(cfg.directories.LOC_RUS);
+  var lang = JSON.parse(fs.readFileSync(cfg.directories.LOC_RUS, 'utf8'));
   console.log(`[${stat_msg.ok}] Localization file file required.`);
 };
 

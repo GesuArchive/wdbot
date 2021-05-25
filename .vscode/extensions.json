@@ -1,5 +1,13 @@
 {
     "recommendations": [
-        "nodesource.vscode-for-node-js-development-pack"
+        "nodesource.vscode-for-node-js-development-pack",
+        "prateekmahendrakar.resxpress",
+        "crowdin.vscode-crowdin",
+        "codezombiech.gitignore",
+        "redvanworkshop.explorer-exclude-vscode-extension",
+        "visualstudioexptteam.vscodeintellicode",
+        "shan.code-settings-sync",
+        "leizongmin.node-module-intellisense",
+        "shd101wyy.markdown-preview-enhanced"
     ]
 }
