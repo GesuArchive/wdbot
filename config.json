@@ -15,6 +15,7 @@
     "ENDROUND":     "594650207950471168"
   },
   "directories": {
+    "MAIN":    "os_user_default",
     "DEMOS":   "/home/ubuntu/_ss13_hosting/production/server_white/data/logs/demos/",
     "REPOS":   "/home/ubuntu/_ss13_hosting/development/",
     "PROD":    "/home/ubuntu/_ss13_hosting/production/",

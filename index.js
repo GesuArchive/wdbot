@@ -9,6 +9,7 @@
 //console.log(process.platform);
 
 var my_os = process.platform;
+// const homedir = require('os').homedir();
 
 if        (my_os === 'linux') {
   console.log("Linux OS, CWD: " + process.cwd());
@@ -60,8 +61,7 @@ console.log(`${mclr.Rst}[____-__-__T__:__:__.___Z] [${stat_msg.boot}] Script sta
 
 /*
 const isRoot = require('is-root');
-
-if isRoot() {
+if (isRoot()) {
   console.log(`${mclr.Rst}[____-__-__T__:__:__.___Z] [${stat_msg.ok}] Elevated privileges confirmed. Trying to import modules...`);
 } else {
   console.log(`${mclr.Rst}[____-__-__T__:__:__.___Z] [${stat_msg.warning}] Elevated privileges is NOT confirmed. Launch as root. Exiting...`);
@@ -75,6 +75,7 @@ const fs       = require('fs');
 const chokidar = require('chokidar');
 const { exit } = require("process");
 require('log-timestamp');
+
 /*
 }
 catch (e) {
