@@ -157,28 +157,41 @@ if ((cfg.general.replays_avaliable) && (cfg.directories.DEMOS != "")) {
   });
 };
 
+//
+// Triggers if new message detected
+//
 client.on('message', message => {
+
+  // Ignoring message if author is bot
   if (message.author.bot) return;
+
+  // Ignoring message if channel is not us
   if (message.channel != client.channels.cache.get(cfg.channels_id.COMMAND_LINE)) return;
+
+  // Ignoring and logging message if not started with our prefix
   if (!message.content.startsWith(cfg.general.cmd_prefix)) {
     console.log(`[${stat_msg.not_cmd}] (${message.author.username}) {${message.channel.name}}: ${message.content}`);
     return;
   } else {
+    // Overwise - logging too and saying "recognized, executing"
     console.log(`[${stat_msg.command}] (${message.author.username}) {${message.channel.name}}: ${message.content}`);
     client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`\`\`\`Сommand recognized, executing. If nothing printed, that can be error.\`\`\``);
   };
 
+  // Command for print help
   if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.general.help)) {
     if (cfg.script_debug) console.log(stat_msg.info + " " + lang.cmd_recived_help);
     print_help();
     return;
   };
 
+  // Command for print Node.js version
   if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.nodejs.version)) {
     client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`Node.js version: ${process.version}`);
     return;
   };
 
+  // Command for print servers list
   if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.general.servers_list)) {
     var slist_out = `Avaliable game servers (names only):\n`;
     slist_out +=    `** • Server №1:** \`${Server1.name}\` — ${Server1.avaliable ? "avaliable" : "not avaliable"}\n`;
@@ -187,11 +200,13 @@ client.on('message', message => {
     return;
   };
 
+  // Command for print
   if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.nodejs.uptime)) {
     client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`Current Node.js process uptime: ${process.uptime()}`);
     return;
   };
 
+  // Command for print
   if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.general.whoisadmin) && message.author.id == cfg.general.HOST_USER_ID) {
     var msg = message.content.slice(cfg.general.cmd_prefix.length).split(' ');
     switch(msg[1]) {
@@ -208,35 +223,53 @@ client.on('message', message => {
     }
   };
 
+  // Command for adding user to operator list (admins)
   if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.general.adduser) && message.author.id == cfg.general.HOST_USER_ID) {
+
+    // Slicing over command
     var msg = message.content.slice(cfg.general.cmd_prefix.length).split(' ');
+
+    // Loop via servers
     switch(msg[1]) {
-    case Server1.name:
-      var uid = Server1.admins.indexOf(msg[2]);
-      if (uid == -1) {
-        Server1.admins.push(msg[2]);
-        fs.writeFileSync('./s1.json', JSON.stringify(Server1, null, 4));
-        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_added_to_server+msg[2]+lang.contoller_added_to_server2+msg[1]+lang.contoller_added_to_server3);
-      } else {
-        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_already_added+msg[2]+lang.contoller_already_added2+msg[1]+lang.contoller_already_added3);
+
+      // For server 1
+      case Server1.name:
+        // Getting list of operators
+        var uid = Server1.admins.indexOf(msg[2]);
+
+        // Checks if mentioned operator exist if operator list
+        if (uid == -1) {
+          Server1.admins.push(msg[2]);
+          fs.writeFileSync('./s1.json', JSON.stringify(Server1, null, 4));
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_added_to_server + msg[2] + lang.contoller_added_to_server2 + msg[1] + lang.contoller_added_to_server3);
+        } else {
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_already_added   + msg[2] + lang.contoller_already_added2    + msg[1] + lang.contoller_already_added3);
+        }
+        break;
+
+      // For server 2
+      case Server2.name:
+        // Getting list of operators
+        var uid = Server2.admins.indexOf(msg[2]);
+
+        // Checks if mentioned operator exist if operator list
+        if (uid == -1) {
+          Server2.admins.push(msg[2]);
+          fs.writeFileSync('./s2.json', JSON.stringify(Server2, null, 4));
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_added_to_server+msg[2]+lang.contoller_added_to_server2+msg[1]+lang.contoller_added_to_server3);
+        } else {
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_already_added+msg[2]+lang.contoller_already_added2+msg[1]+lang.contoller_already_added3);
+        }
+        break;
+
+      // If gets error - sends help printout
+      default:
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.run_help_for_help);
+        return;
       }
-      break;
-    case Server2.name:
-      var uid = Server2.admins.indexOf(msg[2]);
-      if (uid == -1) {
-        Server2.admins.push(msg[2]);
-        fs.writeFileSync('./s2.json', JSON.stringify(Server2, null, 4));
-        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_added_to_server+msg[2]+lang.contoller_added_to_server2+msg[1]+lang.contoller_added_to_server3);
-      } else {
-        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_already_added+msg[2]+lang.contoller_already_added2+msg[1]+lang.contoller_already_added3);
-      }
-      break;
-    default:
-      client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.run_help_for_help);
-      return;
-    }
   };
 
+  // Command for ...
   if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.general.remuser) && message.author.id == cfg.general.HOST_USER_ID) {
     var msg = message.content.slice(cfg.general.cmd_prefix.length).split(' ');
     switch(msg[1]) {
@@ -266,11 +299,13 @@ client.on('message', message => {
     }
   };
 
+  // Command for ...
   if (message.content.startsWith(cfg.general.cmd_prefix + "s " + Server1.name)) {
     cmd_to = message.content.slice(cfg.general.cmd_prefix.length).split(' ').slice(2).join(" ");
     issue_command(message.author.id, cmd_to, Server1.name);
   };
 
+  // Command for ...
   if (message.content.startsWith(cfg.general.cmd_prefix + "s " + Server2.name)) {
     cmd_to = message.content.slice(cfg.general.cmd_prefix.length).split(' ').slice(2).join(" ");
     issue_command(message.author.id, cmd_to, Server2.name);
@@ -278,6 +313,7 @@ client.on('message', message => {
 
 });
 
+//
 async function issue_command(uid, cmd, server) {
   var savaliable;
   var sname;
@@ -313,6 +349,7 @@ async function issue_command(uid, cmd, server) {
     return;
   };
 
+  //
   console.log(`[${stat_msg.load}] ${sname}: Trying to load OS shell game servers control paths.`);
   os_cmds = {
     server_development: `${cfg.directories.REPOS}repo_${sname}`,
@@ -338,6 +375,7 @@ async function issue_command(uid, cmd, server) {
   };
   console.log(`[${stat_msg.ok}] ${sname}: OS shell game servers control paths loaded.`);
 
+  //
   if (admins.includes(uid)) {
     if (devs.includes(uid)) {
       switch (cmd) {
@@ -458,6 +496,7 @@ async function issue_command(uid, cmd, server) {
   };
 };
 
+//
 async function print_help() {
   if (cfg.script_debug) console.log(`${stat_msg.info} Function \"print_help\" called.`);
   //console.log(arguments.callee.name);
@@ -495,9 +534,11 @@ async function print_help() {
   client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(h);
 };
 
+//
 console.log(`[${stat_msg.boot}] Trying to login and start servicing...`);
 client.login(cfg.general.BOT_ACCESS_TOKEN);
 
+//
 client.on("disconnect", () => client.console.warn("Bot is disconnecting..."))
   .on("reconnecting", () => client.console.log("Bot reconnecting..."))
   .on("error", err => client.console.error(err))
@@ -506,7 +547,7 @@ client.on("disconnect", () => client.console.warn("Bot is disconnecting..."))
 //trap `[____-__-__T__:__:__.___Z] [${stat_msg.ok}] Interruption detected, shutting down... ; exit 1`;
 
 
-
+//
 console.log('Script body is initialized.');
 
 //graceful shutdown
@@ -514,6 +555,7 @@ process.on('SIGINT', function() { console.log("Caught interrupt signal (CTRL-C)"
 process.on('SIGQUIT', function() { console.log("Caught interrupt signal (keyboard quit action)"); process.exit(1) });
 process.on('SIGTERM', function() { console.log("Caught interrupt signal (operating system kill)"); process.exit(1) });
 
+//
 process.on('exit', code => {
   console.log (`Exiting. Exit code: ${code}`);
   // client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send("Script stopping die external command.");
