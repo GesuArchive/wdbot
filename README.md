@@ -11,52 +11,55 @@
 
 <p align="center">
   <a href="">
-    <img src="assets/uses-badges.svg"/>
+    <img alt="Uses badges" src="assets/uses-badges.svg"/>
   </a>
   <a href="">
-    <img src="assets/open-source.svg"/>
+    <img alt="Open Source" src="assets/open-source.svg"/>
   </a>
 
   <br>
 
   <a href="https://forthebadge.com">
-    <img src="https://forthebadge.com/images/badges/made-with-javascript.svg"/>
+    <img alt="Made with JS" src="https://forthebadge.com/images/badges/made-with-javascript.svg"/>
   </a>
   <a href="https://forthebadge.com">
-    <img src="https://forthebadge.com/images/badges/made-with-markdown.svg"/>
+    <img alt="Made with MD" src="https://forthebadge.com/images/badges/made-with-markdown.svg"/>
   </a>
 
   <br>
 
   <a href="https://code.visualstudio.com/">
-    <img src="assets/Made_in-VS_Code-1f425f.svg "/>
+    <img alt="Made in-VS Code" src="assets/Made_in-VS_Code-1f425f.svg "/>
   </a>˙
   <a href="">
-    <img src="https://badgen.net/github/checks/Gesugao-san/wdbot/master/ubuntu"/>
+    <img alt="Ubuntu" src="https://badgen.net/github/checks/Gesugao-san/wdbot/master/ubuntu"/>
   </a>˙
   <a href="">
-    <img src="https://badgen.net/github/checks/Gesugao-san/wdbot/master/windows"/>
+    <img alt="Windows" src="https://badgen.net/github/checks/Gesugao-san/wdbot/master/windows"/>
   </a>˙
   <a href="">
-    <img src="https://img.shields.io/snyk/vulnerabilities/github/Gesugao-san/wdbot"/>
+    <img alt="Vulnerabilities" src="https://img.shields.io/snyk/vulnerabilities/github/Gesugao-san/wdbot"/>
   </a>˙
   <a href="https://opensource.org/licenses/MIT">
-    <img src="assets/License-MIT-yellow.svg"/>
+    <img alt="MIT license" src="assets/License-MIT-yellow.svg"/>
   </a>
 
   <br>
 
   <a href="">
-    <img src="https://status.david-dm.org/gh/Gesugao-san/wdbot.svg"/>
+    <img alt="Node (Current)" src="https://img.shields.io/node/v/discord.js">
   </a>˙
   <a href="">
-    <img src="https://status.david-dm.org/gh/Gesugao-san/wdbot.svg?type=dev"/>
+    <img alt="dependencies" src="https://status.david-dm.org/gh/Gesugao-san/wdbot.svg"/>
+  </a>˙
+  <a href="">
+    <img alt="DevDependencies" src="https://status.david-dm.org/gh/Gesugao-san/wdbot.svg?type=dev"/>
   </a>˙
   <a href="https://crowdin.com/project/wdbot">
-    <img src="https://badges.crowdin.net/wdbot/localized.svg"/>
+    <img alt="CrowdIn %" src="https://badges.crowdin.net/wdbot/localized.svg"/>
   </a>˙
   <a href="https://github.com/Gesugao-san/wdbot/issues?q=is%3Apr+is%3Aclosed">
-    <img src="https://img.shields.io/github/last-commit/Gesugao-san/wdbot"/>
+    <img alt="Last Commit" src="https://img.shields.io/github/last-commit/Gesugao-san/wdbot"/>
   </a>
 
   <br>
@@ -68,10 +71,10 @@
     <img alt="GitHub Stars" src="https://img.shields.io/github/stars/Gesugao-san/wdbot.svg?style=social&label=Star&maxAge=2592000"/>
   </a>˙
   <a href="https://GitHub.com/Gesugao-san/wdbot/stargazers/">
-    <img alt="GitHub Watchers" src="https://img.shields.io/github/watchers/Gesugao-san/wdbot?style=social&label=Star&maxAge=2592000">
+    <img alt="GitHub Watchers" src="https://img.shields.io/github/watchers/Gesugao-san/wdbot?style=social&label=Watchers&maxAge=2592000">
   </a>˙
   <a href="https://funclub.pro/">
-    <img alt="funclub.pro" src="https://img.shields.io/website?down_color=red&down_message=offline&up_color=green&up_message=online&url=https://funclub.pro/"/>
+    <img alt="Is FUNCLUB Up?" src="https://img.shields.io/website?down_color=red&down_message=offline&up_color=green&up_message=online&url=https://funclub.pro/"/>
   </a>˙
   <a href="https://discord.com/invite/bNrAW37">
     <img alt="discord.gg/bNrAW37" src="https://img.shields.io/discord/433622753350778890.svg?color=7289da&label=FUNCLUB&logo=discord&style=flat-square"/>

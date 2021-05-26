@@ -1,0 +1,70 @@
+{
+  "general": {
+    "OUTPUT_LANGUAGE": "ENG",
+    "AVAILABLE_OUTPUT_LANGUAGES": ["ENG", "RUS"],
+
+    "BOT_ACCESS_TOKEN": "AAA0000.AAA.AAA_AAA-AA-AAAAAA",
+    "cmd_prefix":       "/",
+    "HOST_USER_ID":     "184761278634524673",
+
+    "replays_avaliable": 0,
+    "url_for_replays":   "https://hub.station13.ru/replay/?roundid="
+  },
+  "channels_id": {
+    "COMMAND_LINE": "654799849333719080",
+    "ENDROUND":     "594650207950471168"
+  },
+  "directories": {
+    "DEMOS":   "/home/ubuntu/_ss13_hosting/production/server_white/data/logs/demos/",
+    "REPOS":   "/home/ubuntu/_ss13_hosting/development/",
+    "PROD":    "/home/ubuntu/_ss13_hosting/production/",
+    "LOC_ENG": "./locales/en.json",
+    "LOC_RUS": "./locales/ru.json",
+    "S1_JSON": "./servers/s1.json",
+    "S2_JSON": "./servers/s2.json"
+  },
+
+  "servers": {
+    "first": {
+      "avaliable": 1,
+      "Discord_show_name": "SERVER №1"
+    },
+    "second": {
+      "avaliable": 1,
+      "Discord_show_name": "SERVER №2"
+    }
+  },
+
+  "commands": {
+    "general": {
+      "help":         "sshelp",
+      "whoisadmin":   "luser",
+      "adduser":      "adduser",
+      "remuser":      "remuser",
+      "servers_list": "server list"
+    },
+      "nodejs": {
+        "version": "version",
+        "uptime":  "uptime"
+    },
+    "build_control": {
+      "deploy":                 "deploy",
+      "compile":                "compile",
+      "update_compile":         "uc",
+      "update":                 "update",
+      "log_update_show":        "ulog1",
+      "log_update_upload":      "ulog2",
+      "log_compile_show":       "clog1",
+      "log_compile_upload":     "clog2",
+      "log_dreamdaemon_show":   "ddlog1",
+      "log_dreamdaemon_upload": "ddlog2"
+    },
+    "work_control": {
+      "status":  "status",
+      "restart": "restart",
+      "start":   "start",
+      "stop":    "stop"
+    }
+  },
+	"debug": 1
+}
