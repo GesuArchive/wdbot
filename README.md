@@ -38,6 +38,9 @@
     <img alt="Windows" src="https://badgen.net/github/checks/Gesugao-san/wdbot/master/windows"/>
   </a>˙
   <a href="">
+    <img alt="travis-ci" src="https://travis-ci.com/Gesugao-san/wdbot.svg?branch=master"/>
+  </a>˙
+  <a href="">
     <img alt="Vulnerabilities" src="https://img.shields.io/snyk/vulnerabilities/github/Gesugao-san/wdbot"/>
   </a>˙
   <a href="https://opensource.org/licenses/MIT">
