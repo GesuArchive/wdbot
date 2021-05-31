@@ -118,7 +118,13 @@ client.on('ready', () => {
   var client_is_ready = true;
   console.log(`[${stat_msg.info}] Logged in as «${client.user.tag}».`);
   console.log(`[${stat_msg.boot}] ${lang.greeting_log}${mclr.Rst}`)
-  client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.greeting_print);
+  //client.channels.cache.get(848867150596669440).send(lang.greeting_print);
+  //var cmd_line = client.channels.fetch(848867150596669440);
+  //console.log(cmd_line);
+  //cmd_line.send(lang.greeting_print);
+  client.channels.fetch('848867150596669440')
+    .then(channel => console.log(channel.name))
+    .catch(console.error);
   client.user.setActivity(lang.bot_status_playing);
 });
 
@@ -147,7 +153,7 @@ async function checkOnline(server) {
   var time = today.getHours() + ":00"; //+ today.getMinutes();
   var dateTime = date + ', ' + time;
 
-  client.channels.cache.get(cfg.channels_id.COMMAND_LINE).setTopic(` | ${cfg.servers.first.Discord_show_name}: ${s1_onlinestatus} | ${cfg.servers.second.Discord_show_name}: ${s2_onlinestatus} | Updated: ${dateTime} (1 hour)`);
+  client.channels.cache.get('848867150596669440').setTopic(` | ${cfg.servers.first.Discord_show_name}: ${s1_onlinestatus} | ${cfg.servers.second.Discord_show_name}: ${s2_onlinestatus} | Updated: ${dateTime} (1 hour)`);
 
 };
 
