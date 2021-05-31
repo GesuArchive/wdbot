@@ -88,8 +88,10 @@ catch (e) {
 
 console.log(`[${stat_msg.info}] This platform is: ${process.platform}`);
 
+
 console.log(`[${stat_msg.load}] Importing modules done. Trying to load config files...`);
 const cfg = JSON.parse(fs.readFileSync(os_config_path, 'utf8'));
+
 
 console.log(`[${stat_msg.ok}] Configs loaded, help command: ${cfg.general.cmd_prefix}${cfg.commands.general.help}. Trying to load localization files...`);
 if ((cfg.general.OUTPUT_LANGUAGE == "ENG") || (typeof(cfg.general.OUTPUT_LANGUAGE) != String))  {
@@ -101,6 +103,7 @@ if ((cfg.general.OUTPUT_LANGUAGE == "ENG") || (typeof(cfg.general.OUTPUT_LANGUAG
   var lang = JSON.parse(fs.readFileSync(cfg.directories.LOC_RUS, 'utf8'));
   console.log(`[${stat_msg.ok}] Localization file file required.`);
 };
+
 
 console.log(`[${stat_msg.ok}] ${lang.select_lang} ${lang.language_name}. ${lang.select_lang2}`);
 
@@ -122,9 +125,12 @@ client.on('ready', () => {
   //var cmd_line = client.channels.fetch(848867150596669440);
   //console.log(cmd_line);
   //cmd_line.send(lang.greeting_print);
-  client.channels.fetch('848867150596669440')
+  client.channels.fetch(cfg.channels_id.COMMAND_LINE)
     .then(channel => console.log(channel.name))
     .catch(console.error);
+
+  client.user.setStatus("online");
+  client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.greeting_print1 + ` «\\${cfg.general.cmd_prefix}${cfg.commands.general.help}\\» ` + lang.greeting_print2);
   client.user.setActivity(lang.bot_status_playing);
 });
 
@@ -148,12 +154,15 @@ async function checkOnline(server) {
  //if ((today.getMinutes()[-1] == 1) || (today.getMinutes()[-1] == 3) || (today.getMinutes()[-1] == 6) || (today.getMinutes()[-1] == 9)) {
 
   var today = new Date();
-  if (today.getMonth() < 9) var date = today.getFullYear() + '.0' + (today.getMonth() + 1) + '.' + today.getDate();
-  var date = today.getFullYear() + '.' + (today.getMonth() + 1) + '.' + today.getDate();
+  if ((today.getMonth() + 1 ) < 9) {
+    var date = today.getFullYear() + '.0' + (today.getMonth() + 1) + '.' + today.getDate();
+  } else {
+    var date = today.getFullYear() + '.' + (today.getMonth() + 1) + '.' + today.getDate();
+  }
   var time = today.getHours() + ":00"; //+ today.getMinutes();
   var dateTime = date + ', ' + time;
 
-  client.channels.cache.get('848867150596669440').setTopic(` | ${cfg.servers.first.Discord_show_name}: ${s1_onlinestatus} | ${cfg.servers.second.Discord_show_name}: ${s2_onlinestatus} | Updated: ${dateTime} (1 hour)`);
+  client.channels.cache.get(cfg.channels_id.COMMAND_LINE).setTopic(` | ${cfg.servers.first.Discord_show_name}: ${s1_onlinestatus} | ${cfg.servers.second.Discord_show_name}: ${s2_onlinestatus} | Updated: ${dateTime} (1 hour)`);
 
 };
 
@@ -563,6 +572,7 @@ process.on('SIGTERM', function() { console.log("Caught interrupt signal (operati
 
 //
 process.on('exit', code => {
+  client.user.setStatus("offline");
   console.log (`Exiting. Exit code: ${code}`);
   // client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send("Script stopping die external command.");
   // client.user.setStatus("offline");
