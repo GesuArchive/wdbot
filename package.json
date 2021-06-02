@@ -12,7 +12,7 @@
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
-    "forever": "^3.0.4"
+    "forever": "^4.0.0"
   },
   "description": "<p align=\"center\">\r   <img src=\"assets/Space_Station_13_logo_(space_bg).png\" />\r   <h2 align=\"center\">\r     <a href=\"https://github.com/frosty-dev/white-dream-main/\">White Dream Project</a> 🤖 Server Control Unit\r   </h2>",
   "version": "1.0.0",
