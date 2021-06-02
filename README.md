@@ -125,7 +125,12 @@ Runs on [Node.js ®](https://nodejs.org/) and using [Discord ®](https://discord
 
 Download and unzip the installation package:
 
+<!--
+  sudo apt update && sudo apt upgrade
+-->
+
 ```bash
+cd ~
 wget http://www.byond.com/download/build/513/513.1542_byond_linux.zip
 unzip 513.1542_byond_linux.zip
 rm 513.1542_byond_linux.zip
@@ -146,9 +151,24 @@ DreamDaemon
 
 In case that the help information is displayed, it means that the BYOND is installed and you can proceed.
 
+<!--
+  curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash - # Using Ubuntu
+  sudo apt install -y wget unzip git screen nodejs
+  sudo apt install -y npm gcc g++ make build-essential
+  sudo apt update -y && sudo apt upgrade -y && sudo apt autoremove -y
+  npm install -g npm
+  git clone https://github.com/frosty-dev/wdbot wdbot
+-->
+
+```bash
+cd ~
+git clone https://github.com/Gesugao-san/wdbot wdbot
+cd wdbot/
+```
+
 1. Copy [`index.js`](./index.js) and [`s1.json`](./servers/s1.json) files into some dir, it doesn't matters what dir.
 2. Install all dependencies by issuing this `npm i discord.js shelljs chokidar log-timestamp is-root`.
-3. Edit[`index.js`](./index.js) and [`s1.json`](./servers/s1.json) (you can create multiple servers) as your server(s) need. ~~The main things you need to edit is on top of the file.~~
+3. Edit [`index.js`](./index.js) and [`s1.json`](./servers/s1.json) (you can create multiple servers) as your server(s) need. ~~The main things you need to edit is on top of the file.~~
 4. Create dirs for `production` and `repos`. In the `repos` dir clone your server and name his folder like `repo_SERVERNAME`.
 5. Replace your [`deploy.sh`](./deploy.sh) in the server repo with ours.
 6. Now run `node index.js` and that is.
