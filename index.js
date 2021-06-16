@@ -9,14 +9,15 @@
 //console.log(process.platform);
 
 var my_os = process.platform;
+// const homedir = require('os').homedir();
 
 if        (my_os === 'linux') {
   console.log("Linux OS, CWD: " + process.cwd());
-  process.chdir('/home/ubuntu/_ss13_hosting/wdbot/'); 
+  process.chdir('/home/ubuntu/_ss13_hosting/wdbot/');
   //process.chdir(process.cwd()); // require('os').homedir();
 } else if (my_os === 'win32') {
   console.log("Windows OS, CWD: " + process.cwd());
-  //process.chdir('C:/wdbot/'); 
+  //process.chdir('C:/wdbot/');
   process.chdir(process.cwd());
 } else {
   console.error("Unknown OS.");
@@ -60,8 +61,7 @@ console.log(`${mclr.Rst}[____-__-__T__:__:__.___Z] [${stat_msg.boot}] Script sta
 
 /*
 const isRoot = require('is-root');
-
-if isRoot() {
+if (isRoot()) {
   console.log(`${mclr.Rst}[____-__-__T__:__:__.___Z] [${stat_msg.ok}] Elevated privileges confirmed. Trying to import modules...`);
 } else {
   console.log(`${mclr.Rst}[____-__-__T__:__:__.___Z] [${stat_msg.warning}] Elevated privileges is NOT confirmed. Launch as root. Exiting...`);
@@ -75,6 +75,7 @@ const fs       = require('fs');
 const chokidar = require('chokidar');
 const { exit } = require("process");
 require('log-timestamp');
+
 /*
 }
 catch (e) {
@@ -87,19 +88,22 @@ catch (e) {
 
 console.log(`[${stat_msg.info}] This platform is: ${process.platform}`);
 
+
 console.log(`[${stat_msg.load}] Importing modules done. Trying to load config files...`);
 const cfg = JSON.parse(fs.readFileSync(os_config_path, 'utf8'));
+
 
 console.log(`[${stat_msg.ok}] Configs loaded, help command: ${cfg.general.cmd_prefix}${cfg.commands.general.help}. Trying to load localization files...`);
 if ((cfg.general.OUTPUT_LANGUAGE == "ENG") || (typeof(cfg.general.OUTPUT_LANGUAGE) != String))  {
   console.log(`[${stat_msg.load}] According to configuration file, trying to loading file of language: English...`);
-  const lang = require(cfg.directories.LOC_ENG);
+  var lang = JSON.parse(fs.readFileSync(cfg.directories.LOC_ENG, 'utf8'));
   console.log(`[${stat_msg.ok}] Localization file file required.`);
 } else {
   console.log(`[${stat_msg.loading}] According to configuration, trying to loading file of language: Russian...`);
-  const lang = require(cfg.directories.LOC_RUS);
+  var lang = JSON.parse(fs.readFileSync(cfg.directories.LOC_RUS, 'utf8'));
   console.log(`[${stat_msg.ok}] Localization file file required.`);
 };
+
 
 console.log(`[${stat_msg.ok}] ${lang.select_lang} ${lang.language_name}. ${lang.select_lang2}`);
 
@@ -117,7 +121,16 @@ client.on('ready', () => {
   var client_is_ready = true;
   console.log(`[${stat_msg.info}] Logged in as «${client.user.tag}».`);
   console.log(`[${stat_msg.boot}] ${lang.greeting_log}${mclr.Rst}`)
-  client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.greeting_print);
+  //client.channels.cache.get(848867150596669440).send(lang.greeting_print);
+  //var cmd_line = client.channels.fetch(848867150596669440);
+  //console.log(cmd_line);
+  //cmd_line.send(lang.greeting_print);
+  client.channels.fetch(cfg.channels_id.COMMAND_LINE)
+    .then(channel => console.log(channel.name))
+    .catch(console.error);
+
+  client.user.setStatus("online");
+  client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.greeting_print1 + ` «\\${cfg.general.cmd_prefix}${cfg.commands.general.help}\\» ` + lang.greeting_print2);
   client.user.setActivity(lang.bot_status_playing);
 });
 
@@ -141,8 +154,11 @@ async function checkOnline(server) {
  //if ((today.getMinutes()[-1] == 1) || (today.getMinutes()[-1] == 3) || (today.getMinutes()[-1] == 6) || (today.getMinutes()[-1] == 9)) {
 
   var today = new Date();
-  if (today.getMonth() < 9) var date = today.getFullYear() + '.0' + (today.getMonth() + 1) + '.' + today.getDate();
-  var date = today.getFullYear() + '.' + (today.getMonth() + 1) + '.' + today.getDate();
+  if ((today.getMonth() + 1 ) < 9) {
+    var date = today.getFullYear() + '.0' + (today.getMonth() + 1) + '.' + today.getDate();
+  } else {
+    var date = today.getFullYear() + '.' + (today.getMonth() + 1) + '.' + today.getDate();
+  }
   var time = today.getHours() + ":00"; //+ today.getMinutes();
   var dateTime = date + ', ' + time;
 
@@ -156,28 +172,41 @@ if ((cfg.general.replays_avaliable) && (cfg.directories.DEMOS != "")) {
   });
 };
 
+//
+// Triggers if new message detected
+//
 client.on('message', message => {
+
+  // Ignoring message if author is bot
   if (message.author.bot) return;
+
+  // Ignoring message if channel is not us
   if (message.channel != client.channels.cache.get(cfg.channels_id.COMMAND_LINE)) return;
+
+  // Ignoring and logging message if not started with our prefix
   if (!message.content.startsWith(cfg.general.cmd_prefix)) {
     console.log(`[${stat_msg.not_cmd}] (${message.author.username}) {${message.channel.name}}: ${message.content}`);
     return;
   } else {
+    // Overwise - logging too and saying "recognized, executing"
     console.log(`[${stat_msg.command}] (${message.author.username}) {${message.channel.name}}: ${message.content}`);
     client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`\`\`\`Сommand recognized, executing. If nothing printed, that can be error.\`\`\``);
   };
 
+  // Command for print help
   if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.general.help)) {
     if (cfg.script_debug) console.log(stat_msg.info + " " + lang.cmd_recived_help);
     print_help();
     return;
   };
 
+  // Command for print Node.js version
   if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.nodejs.version)) {
     client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`Node.js version: ${process.version}`);
     return;
   };
 
+  // Command for print servers list
   if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.general.servers_list)) {
     var slist_out = `Avaliable game servers (names only):\n`;
     slist_out +=    `** • Server №1:** \`${Server1.name}\` — ${Server1.avaliable ? "avaliable" : "not avaliable"}\n`;
@@ -186,11 +215,13 @@ client.on('message', message => {
     return;
   };
 
+  // Command for print
   if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.nodejs.uptime)) {
     client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(`Current Node.js process uptime: ${process.uptime()}`);
     return;
   };
 
+  // Command for print
   if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.general.whoisadmin) && message.author.id == cfg.general.HOST_USER_ID) {
     var msg = message.content.slice(cfg.general.cmd_prefix.length).split(' ');
     switch(msg[1]) {
@@ -207,35 +238,53 @@ client.on('message', message => {
     }
   };
 
+  // Command for adding user to operator list (admins)
   if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.general.adduser) && message.author.id == cfg.general.HOST_USER_ID) {
+
+    // Slicing over command
     var msg = message.content.slice(cfg.general.cmd_prefix.length).split(' ');
+
+    // Loop via servers
     switch(msg[1]) {
-    case Server1.name:
-      var uid = Server1.admins.indexOf(msg[2]);
-      if (uid == -1) {
-        Server1.admins.push(msg[2]);
-        fs.writeFileSync('./s1.json', JSON.stringify(Server1, null, 4));
-        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_added_to_server+msg[2]+lang.contoller_added_to_server2+msg[1]+lang.contoller_added_to_server3);
-      } else {
-        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_already_added+msg[2]+lang.contoller_already_added2+msg[1]+lang.contoller_already_added3);
+
+      // For server 1
+      case Server1.name:
+        // Getting list of operators
+        var uid = Server1.admins.indexOf(msg[2]);
+
+        // Checks if mentioned operator exist if operator list
+        if (uid == -1) {
+          Server1.admins.push(msg[2]);
+          fs.writeFileSync('./s1.json', JSON.stringify(Server1, null, 4));
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_added_to_server + msg[2] + lang.contoller_added_to_server2 + msg[1] + lang.contoller_added_to_server3);
+        } else {
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_already_added   + msg[2] + lang.contoller_already_added2    + msg[1] + lang.contoller_already_added3);
+        }
+        break;
+
+      // For server 2
+      case Server2.name:
+        // Getting list of operators
+        var uid = Server2.admins.indexOf(msg[2]);
+
+        // Checks if mentioned operator exist if operator list
+        if (uid == -1) {
+          Server2.admins.push(msg[2]);
+          fs.writeFileSync('./s2.json', JSON.stringify(Server2, null, 4));
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_added_to_server+msg[2]+lang.contoller_added_to_server2+msg[1]+lang.contoller_added_to_server3);
+        } else {
+          client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_already_added+msg[2]+lang.contoller_already_added2+msg[1]+lang.contoller_already_added3);
+        }
+        break;
+
+      // If gets error - sends help printout
+      default:
+        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.run_help_for_help);
+        return;
       }
-      break;
-    case Server2.name:
-      var uid = Server2.admins.indexOf(msg[2]);
-      if (uid == -1) {
-        Server2.admins.push(msg[2]);
-        fs.writeFileSync('./s2.json', JSON.stringify(Server2, null, 4));
-        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_added_to_server+msg[2]+lang.contoller_added_to_server2+msg[1]+lang.contoller_added_to_server3);
-      } else {
-        client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.contoller_already_added+msg[2]+lang.contoller_already_added2+msg[1]+lang.contoller_already_added3);
-      }
-      break;
-    default:
-      client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(lang.run_help_for_help);
-      return;
-    }
   };
 
+  // Command for ...
   if (message.content.startsWith(cfg.general.cmd_prefix + cfg.commands.general.remuser) && message.author.id == cfg.general.HOST_USER_ID) {
     var msg = message.content.slice(cfg.general.cmd_prefix.length).split(' ');
     switch(msg[1]) {
@@ -265,11 +314,13 @@ client.on('message', message => {
     }
   };
 
+  // Command for ...
   if (message.content.startsWith(cfg.general.cmd_prefix + "s " + Server1.name)) {
     cmd_to = message.content.slice(cfg.general.cmd_prefix.length).split(' ').slice(2).join(" ");
     issue_command(message.author.id, cmd_to, Server1.name);
   };
 
+  // Command for ...
   if (message.content.startsWith(cfg.general.cmd_prefix + "s " + Server2.name)) {
     cmd_to = message.content.slice(cfg.general.cmd_prefix.length).split(' ').slice(2).join(" ");
     issue_command(message.author.id, cmd_to, Server2.name);
@@ -277,6 +328,7 @@ client.on('message', message => {
 
 });
 
+//
 async function issue_command(uid, cmd, server) {
   var savaliable;
   var sname;
@@ -312,6 +364,7 @@ async function issue_command(uid, cmd, server) {
     return;
   };
 
+  //
   console.log(`[${stat_msg.load}] ${sname}: Trying to load OS shell game servers control paths.`);
   os_cmds = {
     server_development: `${cfg.directories.REPOS}repo_${sname}`,
@@ -337,6 +390,7 @@ async function issue_command(uid, cmd, server) {
   };
   console.log(`[${stat_msg.ok}] ${sname}: OS shell game servers control paths loaded.`);
 
+  //
   if (admins.includes(uid)) {
     if (devs.includes(uid)) {
       switch (cmd) {
@@ -457,6 +511,7 @@ async function issue_command(uid, cmd, server) {
   };
 };
 
+//
 async function print_help() {
   if (cfg.script_debug) console.log(`${stat_msg.info} Function \"print_help\" called.`);
   //console.log(arguments.callee.name);
@@ -494,9 +549,11 @@ async function print_help() {
   client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send(h);
 };
 
+//
 console.log(`[${stat_msg.boot}] Trying to login and start servicing...`);
 client.login(cfg.general.BOT_ACCESS_TOKEN);
 
+//
 client.on("disconnect", () => client.console.warn("Bot is disconnecting..."))
   .on("reconnecting", () => client.console.log("Bot reconnecting..."))
   .on("error", err => client.console.error(err))
@@ -505,7 +562,7 @@ client.on("disconnect", () => client.console.warn("Bot is disconnecting..."))
 //trap `[____-__-__T__:__:__.___Z] [${stat_msg.ok}] Interruption detected, shutting down... ; exit 1`;
 
 
-
+//
 console.log('Script body is initialized.');
 
 //graceful shutdown
@@ -513,7 +570,9 @@ process.on('SIGINT', function() { console.log("Caught interrupt signal (CTRL-C)"
 process.on('SIGQUIT', function() { console.log("Caught interrupt signal (keyboard quit action)"); process.exit(1) });
 process.on('SIGTERM', function() { console.log("Caught interrupt signal (operating system kill)"); process.exit(1) });
 
+//
 process.on('exit', code => {
+  client.user.setStatus("offline");
   console.log (`Exiting. Exit code: ${code}`);
   // client.channels.cache.get(cfg.channels_id.COMMAND_LINE).send("Script stopping die external command.");
   // client.user.setStatus("offline");

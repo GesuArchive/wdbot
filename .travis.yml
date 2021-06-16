@@ -1,0 +1,11 @@
+#
+
+name: Node.js CI
+
+os: windows
+
+language: node_js
+node_js:
+  - 16
+
+branches: [ $default-branch ]

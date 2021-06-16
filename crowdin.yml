@@ -1,3 +1,6 @@
+project_id: 456846
+api_token: apiToken
+preserve_hierarchy: true
 files:
-  - source: /crowdin_test.json
-    translation: /translation/%locale_with_underscore%.%file_extension%
+  - source: locales/en.json
+    translation: /locales/%two_letters_code%.%file_extension%
