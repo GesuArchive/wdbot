@@ -1,6 +1,6 @@
 
 <p align="center">
-  <img src="assets/Space_Station_13_logo_(space_bg).png" />
+  <img src="static/Space_Station_13_logo_(space_bg).png" />
   <h2 align="center">
     <a href="https://github.com/frosty-dev/white-dream-main/">White Dream Project</a> 🤖 Server Control Unit
   </h2>
@@ -11,10 +11,10 @@
 
 <p align="center">
   <a href="">
-    <img src="assets/uses-badges.svg"/>
+    <img src="static/uses-badges.svg"/>
   </a>
   <a href="">
-    <img src="assets/open-source.svg"/>
+    <img src="static/open-source.svg"/>
   </a>
 
   <br>
@@ -29,7 +29,7 @@
   <br>
 
   <a href="https://code.visualstudio.com/">
-    <img src="assets/Made_in-VS_Code-1f425f.svg "/>
+    <img src="static/Made_in-VS_Code-1f425f.svg "/>
   </a>˙
   <a href="">
     <img src="https://badgen.net/github/checks/Gesugao-san/wdbot/master/ubuntu"/>
@@ -41,7 +41,7 @@
     <img src="https://img.shields.io/snyk/vulnerabilities/github/Gesugao-san/wdbot"/>
   </a>˙
   <a href="https://opensource.org/licenses/MIT">
-    <img src="assets/License-MIT-yellow.svg"/>
+    <img src="static/License-MIT-yellow.svg"/>
   </a>
 
   <br>
@@ -163,3 +163,6 @@ MIT.
 <p align="center">
   <img src="https://2ip.io/bar/ip3.gif"/>
 </p>
+
+![Discord-Logo-Color.svg](/static/Discord-Logo-Color.svg.png)
+![White](/static/White.png)
